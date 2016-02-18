@@ -5,8 +5,8 @@
 CC = gcc
 LIBS= -lm
 
-#FLAGS= -ggdb -W # unoptimized, debuggable
-FLAGS= -W -O2 # optimized, not debuggable
+FLAGS= -ggdb -W # unoptimized, debuggable
+#FLAGS= -W -O2 # optimized, not debuggable
 
 HEADERS= cover.h bincoef.h tables.h setoper.h anneal.h solcheck.h exp.h arg.h
 OBJECTS= cover.o bincoef.o tables.o setoper.o anneal.o solcheck.o exp.o arg.o

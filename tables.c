@@ -64,13 +64,13 @@ void allocateMemory(void)
 
   if(!onTheFly) {
     elemCountNeighbors = neighborLen * binCoef[v][k];
-    if(abs(elemCountNeighbors - 
+    if(abs(elemCountNeighbors -
 	   (unsigned)((float) neighborLen * (float) binCoef[v][k])) > 1000)
       coverError(INTERNAL_OVERFLOW);
     if(verbose)
       printf("neighbors:%11u   elems\n", elemCountNeighbors);
     elemCountCoverings = coverLen * binCoef[v][k];
-    if(abs(elemCountCoverings - 
+    if(abs(elemCountCoverings -
 	   (unsigned)((float) coverLen * (float) binCoef[v][k])) > 1000)
       coverError(INTERNAL_OVERFLOW);
     if(verbose)
@@ -87,12 +87,12 @@ void allocateMemory(void)
 
   elemCountCovered = coveredLen = binCoef[v][m];
   if(verbose)
-    printf("covered:  %11u   elems\n\n", elemCountCovered); 
+    printf("covered:  %11u   elems\n\n", elemCountCovered);
 
   /* are the space demands too much? */
-  if(memoryLimit > 0 && 
+  if(memoryLimit > 0 &&
      ((float) elemCountNeighbors * sizeof(rankType) +
-      (float) elemCountCoverings * sizeof(rankType) + 
+      (float) elemCountCoverings * sizeof(rankType) +
       (float) elemCountCovered * sizeof(coveredType)
       > memoryLimit))
     coverError(TOO_MUCH_SPACE);
@@ -100,10 +100,10 @@ void allocateMemory(void)
   else {
     if(elemCountNeighbors)
       neighbors = (rankType *) calloc(elemCountNeighbors, sizeof(rankType));
-    coverings = (rankType *) calloc(elemCountCoverings, sizeof(rankType)); 
-    covered = (coveredType *) calloc(elemCountCovered, sizeof(coveredType)); 
+    coverings = (rankType *) calloc(elemCountCoverings, sizeof(rankType));
+    covered = (coveredType *) calloc(elemCountCovered, sizeof(coveredType));
   }
-    
+
   /* was the memory allocation OK? */
   if(!covered || !coverings || (!neighbors && !onTheFly))
     coverError(MEM_ALLOC_ERROR);
@@ -114,9 +114,7 @@ void allocateMemory(void)
 ** calculateNeighbors computes the neighbor ranks for each rank of a k-set.
 **
 */
-
-void calculateNeighbors(void)
-{
+void calculateNeighbors(void) {
   rankType r;
   varietyType subset[maxv + 1], csubset[maxv + 1];
   varietyType subsubset[maxv + 1], subcsubset[maxv + 1], mergeset[maxv + 1];
@@ -126,26 +124,31 @@ void calculateNeighbors(void)
 
   nptr = neighbors;
   getFirstSubset(subset, k);
-  for(r = 0; r < (rankType) binCoef[v][k]; r++) {
+  for(r = 0; r < (rankType) binCoef[v][k]; r++) {         //for each v choose k - choose a block
     makeComplement(subset, csubset, v);
     getFirstSubset(subsubset, k - 1); /* optimoinnin varaa */
-    do {
+    do {                                                  //for each k choose k-1 - choose which points to keep
       getFirstSubset(subcsubset, 1); /* optimoinnin varaa */
-      do {
-	ssptr = subsubset;
-	scptr = subcsubset;
-	mptr = mergeset;
-	subsubset[k - 1] = (varietyType) k;
-	subcsubset[1] = (varietyType) v - k;
-	for(i = 0; i < k; i++)
-	  if(subset[(int) *ssptr] < csubset[(int) *scptr])
-	    *mptr++ = subset[(int) *ssptr++];
-	  else
-	    *mptr++ = csubset[(int) *scptr++];
-	subsubset[k - 1] = (varietyType) maxv + 1; /* sentinel */
-	subcsubset[1] = (varietyType) maxv + 1; /* sentinel */
-	*mptr = maxv + 1; /* sentinel */
-	*nptr++ = rankSubset(mergeset, k);
+      do {                                                //for each v-k choose 1 - choose what NEW point to add
+        ssptr = subsubset;
+        scptr = subcsubset;
+        mptr = mergeset;
+        //I believe these are sentinel values
+        subsubset[k - 1] = (varietyType) h;
+        subcsubset[1] = (varietyType) v - k;
+        //need to add keepers (subsubset) and the new point (subcsubset) together into one set
+        //but we want them in order, so merge them
+        for(i = 0; i < k; i++){
+          if(subset[(int) *ssptr] < csubset[(int) *scptr]){
+            *mptr++ = subset[(int) *ssptr++];
+          } else {
+            *mptr++ = csubset[(int) *scptr++];
+          }
+        }
+        subsubset[k - 1] = (varietyType) maxv + 1; /* sentinel */
+        subcsubset[1] = (varietyType) maxv + 1; /* sentinel */
+        *mptr = maxv + 1; /* sentinel */
+        *nptr++ = rankSubset(mergeset, k);
       } while(getNextSubset(subcsubset, 1, v - k));
     } while(getNextSubset(subsubset, k - 1, k));
     getNextSubset(subset, k, v);
@@ -235,9 +238,7 @@ void calculateOneCovering(rankType kRank, rankType *buf)
 ** possible k-sets into table `coverings'.
 **
 */
-
-void calculateCoverings(void)
-{
+void calculateCoverings(void) {
   rankType r;
 
   for(r = 0; r < (rankType) binCoef[v][k]; r++)
@@ -246,7 +247,7 @@ void calculateCoverings(void)
 
 
 /*
-** freeTables() frees all dynamically allocated tables so that 
+** freeTables() frees all dynamically allocated tables so that
 ** computeTables() can be called again.
 **
 */
@@ -285,7 +286,7 @@ void computeTables(int tl, int kl, int ml, int vl)
 /*
 ** While t,k,m,l are set by computeTables(), b is set separately, because
 ** it doesn't have an effect on the tables except table `kset'. We can do
-** several simulated annealing processes with different values of b 
+** several simulated annealing processes with different values of b
 ** without computing the tables again.
 **
 */

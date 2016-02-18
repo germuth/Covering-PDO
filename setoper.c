@@ -5,6 +5,20 @@
 **
 */
 
+/*Subsets are ranked as follows:
+0 1 2 41
+0 1 3 41
+0 2 3 41
+1 2 3 41
+0 1 4 41
+0 2 4 41
+1 2 4 41
+0 3 4 41
+1 3 4 41
+2 3 4 41
+
+Where 41 is the sentinel value at the end of every subset
+*/
 
 #include "cover.h"
 #include "bincoef.h"
@@ -50,13 +64,12 @@ void getFirstSubset(varietyType *subset, int card)
 ** for this type subset, otherwise the return value is 1.
 */
 
-int getNextSubset(varietyType *subset, int card, int v)
-{
+int getNextSubset(varietyType *subset, int card, int v) {
   int i,j;
 
-  if(subset[0] >= v - card)
+  if(subset[0] >= v - card){
     return 0;
-  else {
+  } else {
     j = 0;
     while(subset[j + 1] <= subset[j] + 1)
       j++;
@@ -93,16 +106,16 @@ void unrankSubset(rankType rank, varietyType *subset, int card)
 ** cardinality `c'. The number of varieties is `v'.
 **
 */
-
-void makeComplement(varietyType *s, varietyType *c, int v)
-{
+//doesn't return valid ticket, just stores what numbers you didn't choose
+void makeComplement(varietyType *s, varietyType *c, int v) {
   int i;
 
-  for(i = 0; i < v; i++)
+  for(i = 0; i < v; i++) {
     if(*s == (varietyType) i)
       s++;
     else
       *c++ = (varietyType) i;
+  }
   *c = maxv + 1; /* sentinel */
 }
 
@@ -112,8 +125,7 @@ void makeComplement(varietyType *s, varietyType *c, int v)
 ** the command-line parameters.
 */
 
-void printSubset(FILE *fp, rankType r, int card)
-{
+void printSubset(FILE *fp, rankType r, int card) {
   varietyType set[maxv + 1], *vptr;
   int i;
 

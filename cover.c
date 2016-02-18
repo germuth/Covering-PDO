@@ -18,11 +18,11 @@
 **      published, a reference should be made to the report
 **      `Constructing Covering Designs by Simulated Annealing' by
 **      Kari J. Nurmela and Patric R. J. \"Osterg\aa rd. (\LaTeX)
-**      Helsinki University of Technology, Digital Systems Laboratory, 
+**      Helsinki University of Technology, Digital Systems Laboratory,
 **      Series B: Technical Reports, No. 10, January 1993, ISSN 0783-540X,
 **      ISBN 951-22-1382-6.
 **
-**   3) Bugs in the program should be reported to Kari.Nurmela@hut.fi or 
+**   3) Bugs in the program should be reported to Kari.Nurmela@hut.fi or
 **      Patric.Ostergard@hut.fi. We also appreciate if improvements and
 **      new features are sent to the same e-mail addresses.
 **
@@ -40,7 +40,8 @@
 
 
 #include <stdio.h>
-#include <malloc.h>
+//changed to help OSX compilation?
+#include <malloc/malloc.h>
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <string.h>
@@ -97,7 +98,7 @@ void printSolution(FILE *fp)
 
 
 /*
-** coverError prints an error message and exits the program 
+** coverError prints an error message and exits the program
 **
 */
 
@@ -192,7 +193,7 @@ void printParams(FILE *fp)
 	  "t - (v,m,k,l) = %d - (%d,%d,%d,%d)\nb = %d\n\n",
 	  t, v, m, k, coverNumber, b);
   fprintf(fp, "Optimization parameters:\n"
-	  "------------------------\n"        
+	  "------------------------\n"
 	  "TestCount     = %d\nCoolingFactor = %.4f\n", testCount, coolFact);
   if(Tset)
     fprintf(fp, "InitTemp      = %.3f\n", initialT);
@@ -220,8 +221,8 @@ void printParams(FILE *fp)
 **
 */
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
+  //test stuff
   costType retVal;
   int j, i, count, bcounter;
   int iterSum;
@@ -266,6 +267,19 @@ int main(int argc, char **argv)
   costSum = costSquareSum = 0;
   iterSum = 0;
 
+
+  /*
+  varietyType ss[3 + 1];
+  getFirstSubset(ss, 3);
+  do {
+    for(int j = 0; j < 4; j++) {
+        printf("%d ", ss[j]);
+    }
+    printf("\n");
+  }while( getNextSubset(ss, 3, 5) );
+  printf("done\n");
+  */
+
   computeTables(t, k, m, v);       /* compute tables for this design */
 
   do {
@@ -273,7 +287,7 @@ int main(int argc, char **argv)
       iterCounter = 0;
       getrusage(RUSAGE_SELF, &before);
       finalCost =
-	localOpt ? localOptimization(L, endLimit) : 
+	localOpt ? localOptimization(L, endLimit) :
 	  simulatedAnnealing(coolFact, initProb, L, frozen, endLimit);
       if(finalCost <= endLimit) {
 	solFound = 1;
@@ -298,10 +312,10 @@ int main(int argc, char **argv)
       fprintf(logFp, "cost          = %d\n", finalCost);
       fflush(logFp);
       if(verbose)
-	if(finalCost <= endLimit)
+	if(finalCost <= endLimit) {
 	  printf("Solution:\n"
 		 "---------\n");
-	else {
+	} else {
 	  printf("EndLimit was not reached.\n\n");
 	  if(verbose >= 2) {
 	    printf("Inadequate solution:\n"
@@ -346,7 +360,7 @@ int main(int argc, char **argv)
 	   "av.iterations = %.2f\n"
 	   "bestCost      = %d\n",
 	   (float) costSum / (float) testCount,
-	   CPUsum / (float) testCount, 
+	   CPUsum / (float) testCount,
 	   (float) iterSum / (float) testCount,
 	   bestCost);
     if(testCount > 1) {
@@ -357,10 +371,10 @@ int main(int argc, char **argv)
 	  "CPU-time      = %.2f\n", bestCost, CPUsum);
   if(testCount > 1)
     fprintf(logFp, "costStandardDeviation = %.3f\n", costSD);
-	  
+
   fflush(stdout);
   fflush(logFp);
-      
+
   freeTables();
   return !solFound; /* returns 0 if a solution was found */
 }

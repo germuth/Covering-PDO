@@ -17,7 +17,7 @@ binCoefType binCoef[maxv + 1][maxv + 2];  /* the binomial coefficient table */
 ** set to 0. In case of overflow the entry in the table is set to 0. We use
 ** 0 instead of, say -1, in order to permit unsigned binCoefType, even
 ** though it brings some labour.
-** 
+**
 */
 
 void calculateBinCoefs(void)
@@ -30,10 +30,10 @@ void calculateBinCoefs(void)
     for(k = 1; k <= v - 1; k++) {
       binCoef[v][k] = binCoef[v - 1][k - 1] + binCoef[v - 1][k];
       if(binCoef[v][k] < binCoef[v - 1][k - 1] ||
-	 binCoef[v][k] < binCoef[v - 1][k] ||
-	 binCoef[v - 1][k - 1] == 0 ||
-	 (binCoef[v - 1][k] == 0 && k < v))
-	binCoef[v][k] = 0; /* there was an overflow */
+        binCoef[v][k] < binCoef[v - 1][k] ||
+        binCoef[v - 1][k - 1] == 0 ||
+        (binCoef[v - 1][k] == 0 && k < v))
+        binCoef[v][k] = 0; /* there was an overflow */
+      }
     }
   }
-}

@@ -42,6 +42,7 @@ struct varstruct {
   {"EndLimit", "%d", &endLimit},
   {"EL", "%d", &endLimit},
   {"local", "%d", &localOpt},
+  {"exhaustive", "%d", &exhaustive},
   {"apprexp", "%d", &apprexp},
   {"OntheFly", "%d", &onTheFly},
   {"OF", "%d", &onTheFly},
@@ -102,7 +103,7 @@ void parseArguments(int argc, char **argv)
   char *tmp;
   int found;
   int m_defined = 0, t_defined = 0;
-  
+
   for(i = 1; i < argc; i++) {
     if((tmp = strchr(argv[i], '=')) == NULL)
       errmsg(argv[i]);

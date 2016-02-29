@@ -13,7 +13,7 @@
 #include "tables.h"
 
 
-rankType *kset = NULL;
+rankType *kset = NULL; //this is the solution
 int neighborLen, coverLen, coveredLen;
 rankType *neighbors, *coverings;
 coveredType *covered;
@@ -192,7 +192,6 @@ int compareRanks(rankType *a, rankType *b)
 ** ranks of covered m-sets are stored in `buf'.
 **
 */
-
 void calculateOneCovering(rankType kRank, rankType *buf)
 {
   static varietyType subset[maxv + 1], csubset[maxv + 1];
@@ -203,28 +202,30 @@ void calculateOneCovering(rankType kRank, rankType *buf)
   static int i, ti;
 
   coverptr = buf;
-  unrankSubset(kRank, subset, k);
+  unrankSubset(kRank, subset, k);                 //subset is curr block
   subset[k] = maxv + 1; /* sentinel */
-  makeComplement(subset, csubset, v);
+  makeComplement(subset, csubset, v);             //csubset is points not in curr block
   for(ti = t; ti <= min(k, m); ti++) {
-    getFirstSubset(subsubset, ti);
+    getFirstSubset(subsubset, ti);                //t-set that this block covers
     do {
-      getFirstSubset(subcsubset, m - ti);
+      getFirstSubset(subcsubset, m - ti);         //other points not in block we can add to t-set to make m-set
       do {
-	ssptr = subsubset;
-	scptr = subcsubset;
-	mptr = mergeset;
-	subsubset[ti] = (varietyType) k;
-	subcsubset[m - ti] = (varietyType) v - k;
-	for(i = 0; i < m; i++)
-	  if(subset[(int) *ssptr] < csubset[(int) *scptr])
-	    *mptr++ = subset[(int) *ssptr++];
-	  else
-	    *mptr++ = csubset[(int) *scptr++];
-	subsubset[ti] = (varietyType) (maxv + 1); /* sentinel */
-	subcsubset[m - ti] = (varietyType) (maxv + 1); /* sentinel */
-	*mptr = (varietyType) (maxv + 1); /* sentinel */
-	*coverptr++ = rankSubset(mergeset, m);
+        ssptr = subsubset;
+        scptr = subcsubset;
+        mptr = mergeset;
+        subsubset[ti] = (varietyType) k;
+        subcsubset[m - ti] = (varietyType) v - k;
+        for(i = 0; i < m; i++){
+          if(subset[(int) *ssptr] < csubset[(int) *scptr]) {
+            *mptr++ = subset[(int) *ssptr++];
+          } else {
+            *mptr++ = csubset[(int) *scptr++];
+          }
+        }
+        subsubset[ti] = (varietyType) (maxv + 1); /* sentinel */
+        subcsubset[m - ti] = (varietyType) (maxv + 1); /* sentinel */
+        *mptr = (varietyType) (maxv + 1); /* sentinel */
+        *coverptr++ = rankSubset(mergeset, m);
       } while(getNextSubset(subcsubset, m - ti, v - k));
     } while(getNextSubset(subsubset, ti, k));
   }
@@ -241,7 +242,7 @@ void calculateOneCovering(rankType kRank, rankType *buf)
 void calculateCoverings(void) {
   rankType r;
 
-  for(r = 0; r < (rankType) binCoef[v][k]; r++)
+  for(r = 0; r < (rankType) binCoef[v][k]; r++) //for each possible block
     calculateOneCovering(r, coverings + ((int) r * coverLen));
 }
 
@@ -252,8 +253,7 @@ void calculateCoverings(void) {
 **
 */
 
-void freeTables(void)
-{
+void freeTables(void) {
   if(!onTheFly) {
     free((void *) neighbors);
   }

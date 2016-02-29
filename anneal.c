@@ -20,7 +20,7 @@ float endT;
 /*
 ** `setNumber' is the index to the table `kset'. `setNumber' indicates
 ** the index of the k-set in the proposed change. The current solution
-** can be changed to the proposed next solution by assigning 
+** can be changed to the proposed next solution by assigning
 ** kset[setNumber] = nextS. `stored', `storedPtr', `currSto' and
 **`nextSto' are for on-the-fly annealing. `costs[x]' holds the difference
 ** of costs associated with a m-set covered x times and x+1 times.
@@ -68,7 +68,7 @@ void calculateCosts(void)
 ** The table `covered' is initialized to zero for computing the initial
 ** solution. It then initiates the table `covered' to this initial solution
 ** and calculates the initial value of the cost function (zeros in `covered').
-** 
+**
 **
 */
 
@@ -93,18 +93,19 @@ costType initSolution(void)
     if(onTheFly) {
       calculateOneCovering(kset[i], coverings);
       coveringsPtr = coverings;
-    }
-    else
+    } else {
       coveringsPtr = coverings + (int) kset[i] * coverLen;
-    for(j = 0; j < coverLen - 1; j++)
+    }
+    for(j = 0; j < coverLen - 1; j++) {
       covered[coveringsPtr[j]]++;
+    }
   }
   for(i = 0, initCost = (costType) 0, ptr = covered; i < coveredLen;
       i++, ptr++)
     initCost += costs[*ptr];
 
   if(verbose) {
-    printf("initCost      = %d\n", initCost); 
+    printf("initCost      = %d\n", initCost);
   }
   return initCost;
 }
@@ -157,7 +158,7 @@ static rankType randomNeighbor(rankType curr)
 costType computeNeighbor(void)
 {
   costType costDelta = 0;
-  
+
   int i;
   rankType currS;
   rankType *currPtr, *nextPtr;
@@ -217,7 +218,7 @@ costType computeNeighbor(void)
     }
     else
       costDelta -= costds[covered[*nextPtr++]];
-  
+
   return costDelta;
 }
 
@@ -297,7 +298,7 @@ static float approxInitT(void)
 
 #define T_PRINT_ITER 300
 
-costType simulatedAnnealing(double coolFact, double initProb, 
+costType simulatedAnnealing(double coolFact, double initProb,
 			    int iterLength, int frozen, int endLimit)
 {
   float deltaF_;
@@ -312,7 +313,7 @@ costType simulatedAnnealing(double coolFact, double initProb,
   calculateCosts();
   currCost = initSolution();
   bestSeen = lastCost = currCost;
-  
+
   if(Tset)
     T = initialT;                         /* T was given as a parameter */
   else
@@ -383,7 +384,7 @@ costType simulatedAnnealing(double coolFact, double initProb,
     if(m2 == 0)
       m2 = 1; /* prevent division by zero */
     if(verbose >= 2)
-      printf("    %5.2f   %4d   %4d    %4.1f   %4.1f   %4.3f\n", 
+      printf("    %5.2f   %4d   %4d    %4.1f   %4.1f   %4.3f\n",
 	     T, currCost, bestSeen, (double) m1 / (double) (m1 + m2) * 100.0,
 	     (double) (m3 + m1) / (double) (m1 + m2 + m3) * 100.0,
 	     (double) (m0) / (double) (m1 + m2 + m3));

@@ -38,6 +38,10 @@
 **
 */
 
+//coverings - what m-sets are covered by each k-set
+//coverings[k][m]
+//covered - how many times each m-set is covered
+//covered[m]
 
 #include <stdio.h>
 //changed to help OSX compilation?
@@ -66,6 +70,7 @@ int L = 24;
 int Lset = 0;
 float LFact = 1.0;
 int localOpt = 0;
+int exhaustive = 0;
 int onTheFly = 0;
 int coverNumber = 1;
 char resultFileName[100] = {'c','o','v','e','r','.','r','e','s','\0'};
@@ -279,26 +284,31 @@ int main(int argc, char **argv) {
   }while( getNextSubset(ss, 3, 5) );
   printf("done\n");
   */
-
+  //neighbour and cover tables
   computeTables(t, k, m, v);       /* compute tables for this design */
 
   do {
     for(count = 0; count < testCount; count++) {
       iterCounter = 0;
       getrusage(RUSAGE_SELF, &before);
-      finalCost =
-	localOpt ? localOptimization(L, endLimit) :
-	  simulatedAnnealing(coolFact, initProb, L, frozen, endLimit);
-      if(finalCost <= endLimit) {
-	solFound = 1;
-	sortSolution();
-	count = testCount; /* need no more runs */
+      if(exhaustive){
+        finalCost = exhaustive();
+      }else if(localOpt){
+        finalCost = localOptimization(L, endLimit);
+      }else {
+        finalCost = simulatedAnnealing(coolFact, initProb, L, frozen, endLimit);
       }
-      if(bestCost == -1 || finalCost < bestCost)
-	bestCost = finalCost;
+      if(finalCost <= endLimit) {
+        solFound = 1;
+        sortSolution();
+        count = testCount; /* need no more runs */
+      }
+      if(bestCost == -1 || finalCost < bestCost) {
+	       bestCost = finalCost;
+      }
       getrusage(RUSAGE_SELF, &after);
       CPU = after.ru_utime.tv_sec + after.ru_utime.tv_usec / 1000000.0 -
-	(before.ru_utime.tv_sec + before.ru_utime.tv_usec / 1000000.0);
+	     (before.ru_utime.tv_sec + before.ru_utime.tv_usec / 1000000.0);
       costSum += finalCost;
       costSquareSum += finalCost * finalCost;
       if(verbose)

@@ -12,6 +12,39 @@ algorithm.
 #include "bincoef.h"
 #include "tables.h"
 #include "exp.h"
+
+costType calcSolutionCost() {
+  int i;
+  costType cost;
+  coveredType *ptr;
+
+  for(i = 0, initCost = (costType) 0, ptr = covered; i < coveredLen;
+      i++, ptr++)
+    cost += costs[*ptr];
+
+  if(verbose) {
+    printf("Cost      = %d\n", cost);
+  }
+  return cost;
+}
+
+void initSolution(void) {
+  int i, j;
+  rankType *coveringsPtr;
+
+  for(i = 0; i < b; i++) {
+    kset[i] = rnd(binCoef[v][k]);
+    coveringsPtr = coverings + (int) kset[i] * coverLen;
+    for(j = 0; j < coverLen - 1; j++) {
+      covered[coveringsPtr[j]]++;
+    }
+  }
+  calcSolutionCost();
+  //return initCost;
+}
+
+
+
 /* returns true if design found*/
 //checks if solution exists for current b
 //must be called with each b, one by one
@@ -26,6 +59,8 @@ costType exhastive() {
   for(rankType mi = 0; mi < m; mi++){
       if(!covered[mi]){
           //this m-set not currently covered
+
+          //find all k-sets that cover this missing p-set
 
       }
   }

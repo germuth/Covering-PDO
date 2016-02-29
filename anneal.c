@@ -68,12 +68,9 @@ void calculateCosts(void)
 ** The table `covered' is initialized to zero for computing the initial
 ** solution. It then initiates the table `covered' to this initial solution
 ** and calculates the initial value of the cost function (zeros in `covered').
-**
-**
 */
 
-costType initSolution(void)
-{
+costType initSolution(void) {
   int i, j;
   costType initCost;
   costType P2plus = (costType) 0;
@@ -109,7 +106,6 @@ costType initSolution(void)
   }
   return initCost;
 }
-
 
 /*
 ** compareVarieties is needed for qsort int randomNeighbor()

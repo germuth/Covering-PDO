@@ -39,6 +39,13 @@ rankType *storedPtr[2];
 ** tables `costs' and `costds' to be used when calculating the costs of
 ** the solutions.
 **
+** Populates costs array
+** Contains the punishment for how many times it was covered
+** For example costs[0] is how much cost is added to a solution if you cover
+** a single m-set 0 times
+** costs[3] is if you cover it 3 times
+** if lambda is 1 we would expect [1,0,0,0,0,0,0,0]
+**  for a covering design (there is no cost for over-covering) 
 */
 
 void calculateCosts(void)
@@ -70,7 +77,7 @@ void calculateCosts(void)
 ** and calculates the initial value of the cost function (zeros in `covered').
 */
 
-costType initSolution(void) {
+static costType initSolution(void) {
   int i, j;
   costType initCost;
   costType P2plus = (costType) 0;

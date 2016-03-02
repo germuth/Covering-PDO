@@ -42,7 +42,7 @@ struct varstruct {
   {"EndLimit", "%d", &endLimit},
   {"EL", "%d", &endLimit},
   {"local", "%d", &localOpt},
-  {"exhaustive", "%d", &exhaustive},
+  {"exhaustive", "%d", &exhaust},
   {"apprexp", "%d", &apprexp},
   {"OntheFly", "%d", &onTheFly},
   {"OF", "%d", &onTheFly},

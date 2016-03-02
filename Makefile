@@ -8,9 +8,9 @@ LIBS= -lm
 FLAGS= -ggdb -W # unoptimized, debuggable
 #FLAGS= -W -O2 # optimized, not debuggable
 
-HEADERS= cover.h bincoef.h tables.h setoper.h anneal.h solcheck.h exp.h arg.h
-OBJECTS= cover.o bincoef.o tables.o setoper.o anneal.o solcheck.o exp.o arg.o
-CS=      cover.c bincoef.c tables.c setoper.c anneal.c solcheck.c exp.c arg.c
+HEADERS= cover.h bincoef.h tables.h setoper.h anneal.h solcheck.h exp.h arg.h exhaustive.h
+OBJECTS= cover.o bincoef.o tables.o setoper.o anneal.o solcheck.o exp.o arg.o exhaustive.o
+CS=      cover.c bincoef.c tables.c setoper.c anneal.c solcheck.c exp.c arg.c exhaustive.c
 AUTOBACKUPS= *~
 
 .c.o :

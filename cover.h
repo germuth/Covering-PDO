@@ -60,7 +60,7 @@ typedef int costDType;
    solutions */
 
 extern int v, k, t, m, b; /* global parameters */
-extern int localOpt;
+extern int localOpt, exhaust;
 extern float coolFact, initProb;
 extern int check;
 extern int testCount;

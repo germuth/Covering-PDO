@@ -1,35 +1,36 @@
 Design parameters:
 ------------------
-t - (v,m,k,l) = 3 - (7,3,5,1)
-b = 5
+t - (v,m,k,l) = 2 - (16,2,4,2)
+b = 40
 
 Optimization parameters:
 ------------------------
-TestCount     = 1
-CoolingFactor = 0.9900
+TestCount     = 5
+CoolingFactor = 0.9990
 InitProb      = 0.50
-frozen        = 10
+frozen        = 999
 RestrNeighbor = 0
-LFact         = 1.00
+LFact         = 2.50
 EndLimit      = 0
 local         = 0
-exhaustive    = 1
 apprexp       = 0
 OntheFly      = 0
 Pack          = 0
-log           = cover.log
-result        = cover.res
+log           = 16-4-2-40.log
+result        = 16-4-2-40.txt
 SolX          = 0
-verbose       = 1
+verbose       = 2
 MemoryLimit   = 0
 check         = 1
 
 
 Runs:
 -----
+cost          = 3
 cost          = 0
 
 Statistics:
 -----------
 bestCost      = 0
-CPU-time      = 0.01
+CPU-time      = 4.86
+costStandardDeviation = 1.342

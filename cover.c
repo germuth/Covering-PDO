@@ -45,7 +45,8 @@
 
 #include <stdio.h>
 //changed to help OSX compilation?
-#include <malloc/malloc.h>
+//#include <malloc/malloc.h>
+#include <malloc.h>
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <string.h>
@@ -55,10 +56,12 @@
 #include "tables.h"
 #include "anneal.h"
 #include "exp.h"
+#include "exhaustive.h"
 
 
 float coolFact=0.99, initProb=0.5;
-int v=4, k=2, t=2, m=2, b=6;
+//int v=4, k=2, t=2, m=2, b=6;
+int v=5, k=3, t=2, m=2, b=4;
 int testCount = 1;
 int restrictedNeighbors = 0;
 float initialT = 1.0;
@@ -70,7 +73,7 @@ int L = 24;
 int Lset = 0;
 float LFact = 1.0;
 int localOpt = 0;
-int exhaustive = 0;
+int exhaust = 1; //lets enable by default for now
 int onTheFly = 0;
 int coverNumber = 1;
 char resultFileName[100] = {'c','o','v','e','r','.','r','e','s','\0'};
@@ -81,7 +84,7 @@ int searchB = 0;
 float SBFact = 0.95;
 int pack = 0;
 int check = 1;
-int verbose = 2;
+int verbose = 1;
 unsigned int PRNGseed;
 
 /*
@@ -89,8 +92,7 @@ unsigned int PRNGseed;
 **
 */
 
-void printSolution(FILE *fp)
-{
+void printSolution(FILE *fp) {
   int i,j;
   varietyType set[maxv + 1];
   varietyType *vptr;
@@ -210,11 +212,14 @@ void printParams(FILE *fp)
     fprintf(fp, "L             = %d\n", L);
   else
     fprintf(fp, "LFact         = %.2f\n", LFact);
-  fprintf(fp, "EndLimit      = %d\nlocal         = %d\napprexp       = %d\n"
+  fprintf(fp, "EndLimit      = %d\n"
+    "local         = %d\n"
+    "exhaustive    = %d\n"
+    "apprexp       = %d\n"
 	  "OntheFly      = %d\nPack          = %d\n"
 	  "log           = %s\nresult        = %s\nSolX          = %d\n"
 	  "verbose       = %d\nMemoryLimit   = %lu\n"
-	  "check         = %d\n\n", endLimit, localOpt, apprexp, onTheFly,
+	  "check         = %d\n\n", endLimit, localOpt, exhaust, apprexp, onTheFly,
 	  pack, logFileName, resultFileName, solX, verbose, memoryLimit,
 	  check);
   fflush(fp);
@@ -263,7 +268,7 @@ int main(int argc, char **argv) {
   else
     bIs(b);          /* number of k-sets */
 
-  if(verbose)
+  if(verbose && !exhaust)
     printParams(stdout);
   printParams(logFp);
   fprintf(logFp, "\nRuns:\n-----\n");
@@ -291,8 +296,9 @@ int main(int argc, char **argv) {
     for(count = 0; count < testCount; count++) {
       iterCounter = 0;
       getrusage(RUSAGE_SELF, &before);
-      if(exhaustive){
-        finalCost = exhaustive();
+      if(exhaust){
+        initSolution();
+        finalCost = bruteforce();
       }else if(localOpt){
         finalCost = localOptimization(L, endLimit);
       }else {

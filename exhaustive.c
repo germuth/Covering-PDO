@@ -6,19 +6,39 @@ possible potential designs. The basis of this search program is given by the fol
 algorithm.
 */
 
-#include <math.h>
-#include <string.h>
 #include "cover.h"
 #include "bincoef.h"
 #include "tables.h"
 #include "exp.h"
 
-costType calcSolutionCost() {
+int currB = 0;
+
+static void addBlock(rankType currBlock){
+    int j;
+    kset[currB] = currBlock;
+    currB++;
+    rankType *coveringsPtr = coverings + (int) currBlock * coverLen;
+    for(j = 0; j < coverLen - 1; j++) {
+        covered[coveringsPtr[j]]++;
+    }
+}
+
+static void removeBlock(rankType currBlock){
+    int j;
+    currB--;
+    rankType *coveringsPtr = coverings + (int) currBlock * coverLen;
+    for(j = 0; j < coverLen - 1; j++) {
+        covered[coveringsPtr[j]]--;
+    }
+}
+
+//looks at covered table to deterine solution cost
+static costType calcSolutionCost() {
   int i;
   costType cost;
   coveredType *ptr;
 
-  for(i = 0, initCost = (costType) 0, ptr = covered; i < coveredLen;
+  for(i = 0, cost = (costType) 0, ptr = covered; i < coveredLen;
       i++, ptr++)
     cost += costs[*ptr];
 
@@ -28,60 +48,59 @@ costType calcSolutionCost() {
   return cost;
 }
 
-void initSolution(void) {
-  int i, j;
-  rankType *coveringsPtr;
+costType initSolution(void) {
+  calculateCosts();
+  //starting solution has only one block, currLength = 1
+  addBlock((rankType) rnd(binCoef[v][k]));
 
-  for(i = 0; i < b; i++) {
-    kset[i] = rnd(binCoef[v][k]);
-    coveringsPtr = coverings + (int) kset[i] * coverLen;
-    for(j = 0; j < coverLen - 1; j++) {
-      covered[coveringsPtr[j]]++;
-    }
-  }
-  calcSolutionCost();
+  return calcSolutionCost();
   //return initCost;
 }
-
-
 
 /* returns true if design found*/
 //checks if solution exists for current b
 //must be called with each b, one by one
-costType exhastive() {
-  int bi;
+costType bruteforce() {
+    rankType i, j, mi;
+    costType cost;
+    if(currB > b){ //too many blocks
+        return 1;
+    }
+    if(currB == b){
+        return checkSolution();
+    }
+    //get rank of first m-set not covered
+    for(mi = 0; mi < binCoef[v][m]; mi++){
+        //TODO could improve speed by counting the number of remaining uncovered sets
+        //and test whether it is even possible to cover the remaining ones with how many blocks you have left
+        if(!covered[mi]){
+            //this m-set not currently covered
 
-  //start with random solution
-  costType initialCost = initSolution();
-
-  int index = 0;
-  //get rank of first m-set not covered
-  for(rankType mi = 0; mi < m; mi++){
-      if(!covered[mi]){
-          //this m-set not currently covered
-
-          //find all k-sets that cover this missing p-set
-
-      }
-  }
-
-  //if empty,
-  //  return cost of 0, kset contains solution
-  //else
-  //  if b == kset.length
-  //    return no design possible
-  //  else
-  //    find all k-sets that cover first missing p-set
-  //    for all found k-sets
-  //      try adding k-set to design
-  //      costType solution = exhaustive();
-  //      if solution == 0
-  //        return solution;
-  //      else
-  //        remove k-set, try next one
-  //    design not possible
-  //
-
+            //for each k-set
+            for(i = 0; i < binCoef[v][k]; i++){
+                //check if it covers this m-set
+                for(j = 0; j < coverLen - 1; j++){
+                    //   if(coverings[i][j] == mi)
+                    if(coverings[i * coverLen + j] == mi){
+                        //this k-set would cover our currently uncovered m-set
+                        addBlock(i);
+                        cost = bruteforce();
+                        if( cost == 0){
+                            return cost;
+                        }
+                        removeBlock(i);
+                    }
+                }
+            }
+            if(!covered[mi]){
+                return 1; //if this m-set couldn't be covered
+            }
+        }
+    }
+    //all m-sets are covered, if all blocks are used
+    return currB == 4;
+}
+/*
   Find first p-set not covered
   If all are represented then {
     Retun tme meanzng a design hm been found.
@@ -109,3 +128,4 @@ costType exhastive() {
     }
   }
 }
+*/

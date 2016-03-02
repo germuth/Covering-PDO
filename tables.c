@@ -134,7 +134,7 @@ void calculateNeighbors(void) {
         scptr = subcsubset;
         mptr = mergeset;
         //I believe these are sentinel values
-        subsubset[k - 1] = (varietyType) h;
+        subsubset[k - 1] = (varietyType) k;
         subcsubset[1] = (varietyType) v - k;
         //need to add keepers (subsubset) and the new point (subcsubset) together into one set
         //but we want them in order, so merge them

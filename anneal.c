@@ -35,6 +35,7 @@ rankType *storedPtr[2];
 
 
 /*
+** TODO This shouldn't be in anneal, this is used in all methods
 ** `calculateCosts()' calculates the costs and cost differences in the
 ** tables `costs' and `costds' to be used when calculating the costs of
 ** the solutions.
@@ -45,11 +46,10 @@ rankType *storedPtr[2];
 ** a single m-set 0 times
 ** costs[3] is if you cover it 3 times
 ** if lambda is 1 we would expect [1,0,0,0,0,0,0,0]
-**  for a covering design (there is no cost for over-covering) 
+**  for a covering design (there is no cost for over-covering)
 */
 
-void calculateCosts(void)
-{
+void calculateCosts(void) {
   int i;
 
   if(pack) /* packing design */
@@ -119,8 +119,7 @@ static costType initSolution(void) {
 **
 */
 
-int compareVarieties(varietyType *a, varietyType *b)
-{
+int compareVarieties(varietyType *a, varietyType *b) {
   if(*a < *b)
     return -1;
   else {
@@ -181,28 +180,28 @@ costType computeNeighbor(void)
     currPtr = NULL;
     for(i = 0; i < 2; i++)
       if(currS == stored[i]) {
-	currPtr = storedPtr[i];
-	currSto = i;
+          currPtr = storedPtr[i];
+          currSto = i;
       }
     nextPtr = NULL;
     for(i = 0; i < 2; i++)
       if(nextS == stored[i]) {
-	nextPtr = storedPtr[i];
-	nextSto = i;
+          nextPtr = storedPtr[i];
+          nextSto = i;
       }
     for(i = 0; !currPtr; i++)
       if(nextSto != i) {
-	storedPtr[i] = currPtr = coverings + i * coverLen;
-	currSto = i;
-	stored[i] = currS;
-	calculateOneCovering(currS, currPtr);
+          storedPtr[i] = currPtr = coverings + i * coverLen;
+          currSto = i;
+          stored[i] = currS;
+          calculateOneCovering(currS, currPtr);
       }
     for(i = 0; !nextPtr; i++)
       if(currSto != i) {
-	storedPtr[i] = nextPtr = coverings + i * coverLen;
-	nextSto = i;
-	stored[i] = nextS;
-	calculateOneCovering(nextS, nextPtr);
+          storedPtr[i] = nextPtr = coverings + i * coverLen;
+          nextSto = i;
+          stored[i] = nextS;
+          calculateOneCovering(nextS, nextPtr);
       }
   }
   else {

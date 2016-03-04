@@ -43,6 +43,7 @@ struct varstruct {
   {"EL", "%d", &endLimit},
   {"local", "%d", &localOpt},
   {"exhaustive", "%d", &exhaust},
+  {"pdo", "%d", &pdoFlag},
   {"apprexp", "%d", &apprexp},
   {"OntheFly", "%d", &onTheFly},
   {"OF", "%d", &onTheFly},

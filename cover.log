@@ -1,7 +1,7 @@
 Design parameters:
 ------------------
-t - (v,m,k,l) = 3 - (7,3,5,1)
-b = 5
+t - (v,m,k,l) = 2 - (5,2,3,1)
+b = 4
 
 Optimization parameters:
 ------------------------
@@ -13,7 +13,8 @@ RestrNeighbor = 0
 LFact         = 1.00
 EndLimit      = 0
 local         = 0
-exhaustive    = 1
+exhaustive    = 0
+PDO-Search    = 1
 apprexp       = 0
 OntheFly      = 0
 Pack          = 0
@@ -32,4 +33,4 @@ cost          = 0
 Statistics:
 -----------
 bestCost      = 0
-CPU-time      = 0.01
+CPU-time      = 0.00

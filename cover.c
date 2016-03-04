@@ -57,6 +57,7 @@
 #include "anneal.h"
 #include "exp.h"
 #include "exhaustive.h"
+#include "pdo.h"
 
 
 float coolFact=0.99, initProb=0.5;
@@ -72,8 +73,10 @@ int Tset = 0;
 int L = 24;
 int Lset = 0;
 float LFact = 1.0;
+//TODO should be simulatedAnnealing flag or even better an enum
 int localOpt = 0;
-int exhaust = 1; //lets enable by default for now
+int exhaust = 0; //lets enable by default for now
+int pdoFlag = 1;
 int onTheFly = 0;
 int coverNumber = 1;
 char resultFileName[100] = {'c','o','v','e','r','.','r','e','s','\0'};
@@ -215,11 +218,12 @@ void printParams(FILE *fp)
   fprintf(fp, "EndLimit      = %d\n"
     "local         = %d\n"
     "exhaustive    = %d\n"
+    "PDO-Search    = %d\n"
     "apprexp       = %d\n"
 	  "OntheFly      = %d\nPack          = %d\n"
 	  "log           = %s\nresult        = %s\nSolX          = %d\n"
 	  "verbose       = %d\nMemoryLimit   = %lu\n"
-	  "check         = %d\n\n", endLimit, localOpt, exhaust, apprexp, onTheFly,
+	  "check         = %d\n\n", endLimit, localOpt, exhaust, pdoFlag, apprexp, onTheFly,
 	  pack, logFileName, resultFileName, solX, verbose, memoryLimit,
 	  check);
   fflush(fp);
@@ -268,7 +272,7 @@ int main(int argc, char **argv) {
   else
     bIs(b);          /* number of k-sets */
 
-  if(verbose && !exhaust)
+  if(verbose && !pdoFlag)
     printParams(stdout);
   printParams(logFp);
   fprintf(logFp, "\nRuns:\n-----\n");
@@ -297,12 +301,14 @@ int main(int argc, char **argv) {
       iterCounter = 0;
       getrusage(RUSAGE_SELF, &before);
       if(exhaust){
-        initSolution();
-        finalCost = bruteforce();
+          initSolution();
+          finalCost = bruteforce();
+      }else if(pdoFlag){
+          finalCost = pdo();
       }else if(localOpt){
-        finalCost = localOptimization(L, endLimit);
+          finalCost = localOptimization(L, endLimit);
       }else {
-        finalCost = simulatedAnnealing(coolFact, initProb, L, frozen, endLimit);
+          finalCost = simulatedAnnealing(coolFact, initProb, L, frozen, endLimit);
       }
       if(finalCost <= endLimit) {
         solFound = 1;

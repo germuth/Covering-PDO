@@ -43,6 +43,10 @@ static costType initSolution(void) {
   return initCost;
 }
 
+static void printProgress(void){
+  printf("\rjdf\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d",
+    jdf[0], jdf[1], jdf[2], jdf[3], jdf[4], jdf[5], jdf[6], jdf[7], jdf[8], jdf[9]);
+}
 costType pdo() {
     int i;
     int maxCost = 0;
@@ -75,6 +79,9 @@ costType pdo() {
     //get random neighbour and its cost
     int costDifference = computeNeighbor();
 
+    printf("level\t\t\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\n");
+    printProgress();
+
     while( currCost > 0){
         counter++;
         if( costDifference > 0) { //if( neighborCost > currCost){
@@ -85,7 +92,7 @@ costType pdo() {
                 currCost += costDifference;
             }else{
                 //undo move
-                
+
             }
         }else if(costDifference == 0) { //if( neighborCost == currCost ){
             acceptNeighbor();
@@ -94,12 +101,14 @@ costType pdo() {
             updateJDF();
             jdc[currCost]++;//increment number of times we have jumped down
             acceptNeighbor();
+            printProgress();
             counter = 0;
             currCost += costDifference;
         }
         //try random neighbour
         costDifference = computeNeighbor();
     }
+    printf("\n");
 
     return 0;
 }

@@ -1,7 +1,7 @@
 Design parameters:
 ------------------
-t - (v,m,k,l) = 2 - (5,2,3,1)
-b = 4
+t - (v,m,k,l) = 2 - (19,2,3,1)
+b = 57
 
 Optimization parameters:
 ------------------------
@@ -21,7 +21,7 @@ Pack          = 0
 log           = cover.log
 result        = cover.res
 SolX          = 0
-verbose       = 1
+verbose       = 2
 MemoryLimit   = 0
 check         = 1
 
@@ -33,4 +33,4 @@ cost          = 0
 Statistics:
 -----------
 bestCost      = 0
-CPU-time      = 0.00
+CPU-time      = 1.00

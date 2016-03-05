@@ -87,7 +87,7 @@ int searchB = 0;
 float SBFact = 0.95;
 int pack = 0;
 int check = 1;
-int verbose = 1;
+int verbose = 2;
 unsigned int PRNGseed;
 
 /*
@@ -296,6 +296,8 @@ int main(int argc, char **argv) {
   //neighbour and cover tables
   computeTables(t, k, m, v);       /* compute tables for this design */
 
+  printf("Searching for a (%d,%d,%d,%d,%d) covering in %d blocks. (v,k,m,t,lamda)\n",
+    v,k,m,t,coverNumber,b);
   do {
     for(count = 0; count < testCount; count++) {
       iterCounter = 0;

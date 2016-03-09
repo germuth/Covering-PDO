@@ -12,9 +12,10 @@
 #include <stdio.h>
 #include <limits.h>
 
-#define maxv 40
+//#define maxv 40
+#define maxv 70
 /* binomial coefficients are tried to calculate up to binCoef[maxv][?]
- * (overflow is checked and the program is not halted 
+ * (overflow is checked and the program is not halted
  */
 
 #define min(X,Y) ((X) < (Y) ? (X) : (Y))
@@ -42,7 +43,7 @@ typedef unsigned short coveredType;
    you want the definition of maxkSetCount to continue to work. */
 
 #define maxkSetCount ((((unsigned long) 1) << (8 * sizeof(coveredType))) - 1)
-/* maximum number of k-sets. If your type `char' is different from 8 bits 
+/* maximum number of k-sets. If your type `char' is different from 8 bits
    or you have some other problems, replace this with the absolute number.
    See also `coveredType' above. */
 

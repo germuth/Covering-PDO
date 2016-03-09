@@ -31,7 +31,12 @@ static costType initSolution(void) {
 
   for(i = 0; i < b; i++) {
     kset[i] = rnd(binCoef[v][k]);
-    coveringsPtr = coverings + (int) kset[i] * coverLen;
+    if(onTheFly) {
+      calculateOneCovering(kset[i], coverings);
+      coveringsPtr = coverings;
+    } else {
+      coveringsPtr = coverings + (int) kset[i] * coverLen;
+    }
     for(j = 0; j < coverLen - 1; j++) {
       covered[coveringsPtr[j]]++;
     }
@@ -44,8 +49,11 @@ static costType initSolution(void) {
 }
 
 static void printProgress(void){
-  printf("\rjdf\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d",
-    jdf[0], jdf[1], jdf[2], jdf[3], jdf[4], jdf[5], jdf[6], jdf[7], jdf[8], jdf[9]);
+    printf("\rjdc\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+        jdc[0], jdc[1], jdc[2], jdc[3], jdc[4], jdc[5], jdc[6], jdc[7], jdc[8], jdc[9]);
+    printf("\rjdf\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d",
+        jdf[0], jdf[1], jdf[2], jdf[3], jdf[4], jdf[5], jdf[6], jdf[7], jdf[8], jdf[9]);
+    printf("\033[F");
 }
 costType pdo() {
     int i;
@@ -108,7 +116,7 @@ costType pdo() {
         //try random neighbour
         costDifference = computeNeighbor();
     }
-    printf("\n");
+    printf("\n\n\n");
 
     return 0;
 }

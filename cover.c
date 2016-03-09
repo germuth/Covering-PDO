@@ -236,7 +236,6 @@ void printParams(FILE *fp)
 */
 
 int main(int argc, char **argv) {
-  //test stuff
   costType retVal;
   int j, i, count, bcounter;
   int iterSum;

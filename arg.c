@@ -44,6 +44,7 @@ struct varstruct {
   {"local", "%d", &localOpt},
   {"exhaustive", "%d", &exhaust},
   {"pdo", "%d", &pdoFlag},
+  {"randomStart", "%d", &randomStartFlag},
   {"apprexp", "%d", &apprexp},
   {"OntheFly", "%d", &onTheFly},
   {"OF", "%d", &onTheFly},

@@ -24,35 +24,50 @@ static void updateJDF(void){
 }
 
 static costType initSolution(void) {
-  int i, j;
-  costType initCost;
-  coveredType *ptr;
-  rankType *coveringsPtr;
+    int i, j;
+    costType initCost;
+    coveredType *ptr;
+    rankType *coveringsPtr;
 
-  for(i = 0; i < b; i++) {
-    kset[i] = rnd(binCoef[v][k]);
-    if(onTheFly) {
-      calculateOneCovering(kset[i], coverings);
-      coveringsPtr = coverings;
-    } else {
-      coveringsPtr = coverings + (int) kset[i] * coverLen;
+
+    for(i = 0; i < b; i++) {
+        if(randomStartFlag){
+            kset[i] = rnd(binCoef[v][k]);
+        }else{
+            //TODO hardcoded for k=5
+            int v1,v2,v3,v4,v5;
+            scanf("%d %d %d %d %d",&v1,&v2,&v3,&v4,&v5);
+            varietyType *block = calloc(6, sizeof(int));
+            block[0] = v1 - 1;
+            block[1] = v2 - 1;
+            block[2] = v3 - 1;
+            block[3] = v4 - 1;
+            block[4] = v5 - 1;
+            block[5] = maxv + 1;
+            kset[i] = rankSubset(block, k);
+        }
+        if(onTheFly) {
+            calculateOneCovering(kset[i], coverings);
+            coveringsPtr = coverings;
+        } else {
+            coveringsPtr = coverings + (int) kset[i] * coverLen;
+        }
+        for(j = 0; j < coverLen - 1; j++) {
+            covered[coveringsPtr[j]]++;
+        }
     }
-    for(j = 0; j < coverLen - 1; j++) {
-      covered[coveringsPtr[j]]++;
-    }
-  }
-  for(i = 0, initCost = (costType) 0, ptr = covered; i < coveredLen;
-      i++, ptr++)
+    for(i = 0, initCost = (costType) 0, ptr = covered; i < coveredLen;
+    i++, ptr++)
     initCost += costs[*ptr];
 
-  return initCost;
+    return initCost;
 }
 
 static void printProgress(void){
     printf("\rjdc\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
-        jdc[0], jdc[1], jdc[2], jdc[3], jdc[4], jdc[5], jdc[6], jdc[7], jdc[8], jdc[9]);
+    jdc[0], jdc[1], jdc[2], jdc[3], jdc[4], jdc[5], jdc[6], jdc[7], jdc[8], jdc[9]);
     printf("\rjdf\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d",
-        jdf[0], jdf[1], jdf[2], jdf[3], jdf[4], jdf[5], jdf[6], jdf[7], jdf[8], jdf[9]);
+    jdf[0], jdf[1], jdf[2], jdf[3], jdf[4], jdf[5], jdf[6], jdf[7], jdf[8], jdf[9]);
     printf("\033[F");
 }
 costType pdo() {

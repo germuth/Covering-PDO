@@ -62,7 +62,8 @@
 
 float coolFact=0.99, initProb=0.5;
 //int v=4, k=2, t=2, m=2, b=6;
-int v=5, k=3, t=2, m=2, b=4;
+//int v=5, k=3, t=2, m=2, b=4;
+int v=5, k=5, t=3, m=4, b=4;
 int testCount = 1;
 int restrictedNeighbors = 0;
 float initialT = 1.0;
@@ -76,6 +77,7 @@ float LFact = 1.0;
 //TODO should be simulatedAnnealing flag or even better an enum
 int localOpt = 0;
 int exhaust = 0; //lets enable by default for now
+int randomStartFlag = 1;
 int pdoFlag = 1;
 int onTheFly = 0;
 int coverNumber = 1;

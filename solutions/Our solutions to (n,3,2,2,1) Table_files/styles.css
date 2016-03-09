@@ -1,0 +1,129 @@
+div#master {
+	margin-left: auto;
+	margin-right: auto;
+	width: 955px;
+}
+div#ads {
+	text-align: center;
+	width: 160px;
+	float: right;
+}
+div#container {
+	float: left;
+	width: 775px;
+	border: 1px solid #CC3300;
+}
+div#head {
+	width: 775px;
+	border-bottom: 1px solid #CC3300;
+}
+div#navigation {
+	width: 755px;
+	height: 22px;
+	padding: 0px 10px 0px 10px;
+	background: #CC3300;
+}
+div#content {
+	width: 755px;
+	padding: 30px 10px 10px 10px;
+	background: #FF9933;
+}
+div#footer {
+	margin-top: 5px;
+	width: 755px;
+}
+body {
+	margin: 10px;
+	background: #FFFFFF;
+}
+table.systeme {
+	background: #CC3300;
+	margin-left: auto;
+	margin-right: auto;
+}
+table.menue {
+	margin-left: auto;
+	margin-right: auto;
+}
+h1 {
+	font-family: Verdana, Arial, Helvetica, sans-serif; 
+	font-size: 15px;
+	line-height: 20px; 
+	font-weight: bold; 
+	color: #FFCC66;
+	margin-top: 0px;
+	margin-bottom: 5px;
+}
+h2 {
+	font-family: Verdana, Arial, Helvetica, sans-serif; 
+	font-size: 13px;
+	line-height: 20px; 
+	font-weight: bold; 
+	color: #CC3300; 
+	margin-top: 0px;
+	margin-bottom: 5px;
+}
+hr {
+	height: 1px;
+	border-style: none;
+	margin-top: 3px;
+	margin-bottom: 3px;
+	color: #000000;
+	background-color: #CC3300;
+}
+.fliess {
+	font-family: Verdana, Arial, Helvetica, sans-serif; 
+	font-size: 12px;
+	line-height: 16px; 
+	font-weight: normal; 
+	color: #CC3300;
+}
+a.fliess {
+	font-family: Verdana, Arial, Helvetica, sans-serif; 
+	font-size: 12px;
+	line-height: 16px; 
+	font-weight: normal; 
+	color: #CC3300;
+	text-decoration: underline; 
+}
+a.fliess:hover {
+	text-decoration: none; 
+}
+.nav {
+	font-family: Verdana, Arial, Helvetica, sans-serif; 
+	font-size: 12px;
+	line-height: 20px; 
+	font-weight: bold; 
+	color: #FF9933;
+	text-decoration: none; 
+}
+.nav:hover,.navaktiv {
+	font-family: Verdana, Arial, Helvetica, sans-serif; 
+	font-size: 12px;
+	line-height: 20px; 
+	font-weight: bold; 
+	color: #FFCC66;
+	text-decoration: none; 
+}
+.formular {
+	border-style: none;
+	font-family: verdana;
+	font-size: 10px;
+	color: #000000;
+	background: #cccccc;
+}
+div.trenner {
+	clear: both;
+}
+tr.weiss {
+	background: #ffffff;
+}
+tr.grau {
+	background: #cccccc;
+}
+tr.rot {
+	background: #CC3300;
+}
+tr.orange {
+	background: #FF9933;
+}

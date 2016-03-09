@@ -244,6 +244,7 @@ int main(int argc, char **argv) {
   float CPU, CPUsum;
   int solFound = 0;
   int bestCost = -1;
+  char *logName, *resultName;
   FILE *logFp, *resFp;
   int hiB = -1, loB = -1;
   float costSD = 0.;
@@ -256,7 +257,8 @@ int main(int argc, char **argv) {
     printf("\n"
 	   "cover 1.0a - find covering designs using simulated annealing\n"
 	   "============================================================\n\n");
-  logFp = fopen(logFileName, "w");
+       asprintf(&logName, "./solutions/(%d,%d,%d,%d,%d) - %d.log", v,k,m,t,coverNumber,b);
+  logFp = fopen(logName, "w");
   if(!logFp) {
     fprintf(stderr, "Can't open log file %s.\n", logFileName);
     coverError(SEE_ABOVE_ERROR);
@@ -349,7 +351,8 @@ int main(int argc, char **argv) {
       if(finalCost <= endLimit) {
 	if(verbose)
 	  printSolution(stdout);
-	resFp = fopen(resultFileName, "w");
+    asprintf(&resultName, "./solutions/(%d,%d,%d,%d,%d) - %d.res", v,k,m,t,coverNumber,b);
+	resFp = fopen(resultName, "w");
 	if(!resFp) {
 	  fprintf(stderr, "Can't open file %s.\n", resultFileName);
 	  coverError(SEE_ABOVE_ERROR);

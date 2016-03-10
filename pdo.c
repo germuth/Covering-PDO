@@ -23,7 +23,7 @@ static void updateJDF(void){
     */
     double ans = jdf[currCost] + counter;
     ans /= (double)(jdc[currCost] + 1);
-    ans *= jdc[currCost]; //do the multiplication after division, not before
+    ans *= (double) jdc[currCost]; //do the multiplication after division, not before
 
     jdf[currCost] = (int)ceil(ans);
 }

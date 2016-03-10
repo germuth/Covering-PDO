@@ -51,6 +51,7 @@
 #include <sys/resource.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 #include "cover.h"
 #include "bincoef.h"
 #include "tables.h"
@@ -301,6 +302,13 @@ int main(int argc, char **argv) {
 
   printf("Searching for a (%d,%d,%d,%d,%d) covering in %d blocks. (v,k,m,t,lamda)\n",
     v,k,m,t,coverNumber,b);
+
+  time_t rawtime;
+  struct tm * timeinfo;
+  time ( &rawtime );
+  timeinfo = localtime ( &rawtime );
+  printf ( "Started at %s\n", asctime (timeinfo) );
+
   do {
     for(count = 0; count < testCount; count++) {
       iterCounter = 0;

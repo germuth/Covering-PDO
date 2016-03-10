@@ -1,7 +1,7 @@
 Design parameters:
 ------------------
-t - (v,m,k,l) = 3 - (13,4,5,1)
-b = 16
+t - (v,m,k,l) = 3 - (6,4,5,1)
+b = 1
 
 Optimization parameters:
 ------------------------
@@ -33,4 +33,4 @@ cost          = 0
 Statistics:
 -----------
 bestCost      = 0
-CPU-time      = 0.23
+CPU-time      = 0.00

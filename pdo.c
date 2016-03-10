@@ -17,8 +17,13 @@ int currCost;
 int counter;
 
 static void updateJDF(void){
+    /* WAS GETTING OVERFLOWS SOMETIMES
     double ans = jdc[currCost] * jdf[currCost] + counter;
     ans /= (double)(jdc[currCost] + 1);
+    */
+    double ans = jdf[currCost] + counter;
+    ans /= (double)(jdc[currCost] + 1);
+    ans *= jdc[currCost]; //do the multiplication after division, not before
 
     jdf[currCost] = (int)ceil(ans);
 }
@@ -70,6 +75,7 @@ static void printProgress(void){
     jdf[0], jdf[1], jdf[2], jdf[3], jdf[4], jdf[5], jdf[6], jdf[7], jdf[8], jdf[9]);
     printf("\033[F");
 }
+
 costType pdo() {
     int i;
     int maxCost = 0;

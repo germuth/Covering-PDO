@@ -148,7 +148,7 @@ costType pdo() {
     //Jump Down Function: cost -> moves needed to find good neighbour
     jdf = calloc(maxCost, sizeof(int));
     for(i = 0; i < maxCost; i++){
-        jdf[i] = 10 * neighborLen;
+        jdf[i] = pdoK * neighborLen;
     }
     //Jump Down Count: jdc[i] = number of times we have jumped down from a solution at level i
     jdc = calloc(maxCost, sizeof(int));
@@ -168,7 +168,7 @@ costType pdo() {
     while( currCost > 0){
         counter++;
         if( costDifference > 0) { //if( neighborCost > currCost){
-            if( counter > 2 * jdf[currCost] ){ //TODO parameter here
+            if( counter > pdoJ * jdf[currCost] ){ //TODO parameter here
                 //failed to find jump down from this level, accept bad neighbour anyway
                 acceptNeighbor();
                 counter = 0;

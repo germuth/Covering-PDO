@@ -79,8 +79,10 @@ float LFact = 1.0;
 int localOpt = 0;
 int exhaust = 0; //lets enable by default for now
 int randomStartFlag = 1;
-int pdoFlag = 1;
 int greedyStartFlag = 0;
+int pdoFlag = 1;
+int pdoK = 10;
+int pdoJ = 2;
 int onTheFly = 0;
 int coverNumber = 1;
 int solX = 0;
@@ -221,13 +223,14 @@ void printParams(FILE *fp)
     "local         = %d\n"
     "exhaustive    = %d\n"
     "PDO-Search    = %d\n"
+    "PDO-K         = %d\n"
+    "PDO-J         = %d\n"
     "apprexp       = %d\n"
 	  "OntheFly      = %d\nPack          = %d\n"
 	  "SolX          = %d\n"
 	  "verbose       = %d\nMemoryLimit   = %lu\n"
-	  "check         = %d\n\n", endLimit, localOpt, exhaust, pdoFlag, apprexp, onTheFly,
-	  pack, solX, verbose, memoryLimit,
-	  check);
+	  "check         = %d\n\n", endLimit, localOpt, exhaust, pdoFlag, pdoK, pdoJ,
+      apprexp, onTheFly, pack, solX, verbose, memoryLimit, check);
   fflush(fp);
 }
 

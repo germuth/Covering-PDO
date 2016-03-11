@@ -63,6 +63,7 @@ typedef int costDType;
 extern int v, k, t, m, b; /* global parameters */
 extern int localOpt, exhaust, pdoFlag;
 extern int randomStartFlag, greedyStartFlag;
+extern int pdoK, pdoJ;
 extern float coolFact, initProb;
 extern int check;
 extern int testCount;

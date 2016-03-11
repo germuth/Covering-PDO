@@ -15,6 +15,8 @@ int *jdf;
 int *jdc;
 int currCost;
 int counter;
+int maxCost = 0;
+int printCount = 0;
 
 static void updateJDF(void){
     /* WAS GETTING OVERFLOWS SOMETIMES
@@ -123,16 +125,42 @@ static costType initSolution(void) {
 }
 
 static void printProgress(void){
+    int indices[] = {0,1,2,3,4,5,6,7,8,9};
+    if(pdoPrint == 2){
+        //print first 10 costs that have been found rather than just first 10
+        int i = 0;
+        int curr = 0;
+        for(; i < maxCost && curr < 10; i++){
+            if(jdc[i] > 1){
+                indices[curr] = i;
+                curr++;
+            }
+        }
+        if(curr != 10){
+            qsort((int *)indices, 10, sizeof(int), compareVarieties);
+        }
+    }
+    printf("                                                                                                             ");
+    printf("\rlevel\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+    indices[0], indices[1], indices[2], indices[3],
+    indices[4], indices[5], indices[6], indices[7],
+    indices[8], indices[9]);
+    printf("                                                                                                             ");
     printf("\rjdc\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
-    jdc[0], jdc[1], jdc[2], jdc[3], jdc[4], jdc[5], jdc[6], jdc[7], jdc[8], jdc[9]);
+    jdc[indices[0]], jdc[indices[1]], jdc[indices[2]], jdc[indices[3]],
+    jdc[indices[4]], jdc[indices[5]], jdc[indices[6]], jdc[indices[7]],
+    jdc[indices[8]], jdc[indices[9]]);
+    printf("                                                                                                             ");
     printf("\rjdf\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d",
-    jdf[0], jdf[1], jdf[2], jdf[3], jdf[4], jdf[5], jdf[6], jdf[7], jdf[8], jdf[9], currCost);
+    jdf[indices[0]], jdf[indices[1]], jdf[indices[2]], jdf[indices[3]],
+    jdf[indices[4]], jdf[indices[5]], jdf[indices[6]], jdf[indices[7]],
+    jdf[indices[8]], jdf[indices[9]], currCost);
+    printf("\033[F");
     printf("\033[F");
 }
 
 costType pdo() {
     int i;
-    int maxCost = 0;
 
     //costs[lambda] holds costs for covering a single m-set lambda times
     calculateCosts();
@@ -162,7 +190,6 @@ costType pdo() {
     //get random neighbour and its cost
     int costDifference = computeNeighbor();
 
-    printf("level\t\t\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\n");
     printProgress();
 
     while( currCost > 0){
@@ -184,14 +211,19 @@ costType pdo() {
             updateJDF();
             jdc[currCost]++;//increment number of times we have jumped down
             acceptNeighbor();
-            printProgress();
+            if(pdoPrint && !printCount--){
+                printProgress();
+                printCount = pdoPrintFreq;
+            }
             counter = 0;
             currCost += costDifference;
         }
         //try random neighbour
         costDifference = computeNeighbor();
     }
-    printf("\n\n\n");
+    if(pdoPrint){
+        printf("\n\n\n");
+    }
 
     return 0;
 }

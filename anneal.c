@@ -114,21 +114,6 @@ static costType initSolution(void) {
   return initCost;
 }
 
-/*
-** compareVarieties is needed for qsort int randomNeighbor()
-**
-*/
-
-int compareVarieties(varietyType *a, varietyType *b) {
-  if(*a < *b)
-    return -1;
-  else {
-    if(*a > *b)
-      return 1;
-    else
-      return 0;
-  }
-}
 
 
 /*

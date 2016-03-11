@@ -1,6 +1,6 @@
 Design parameters:
 ------------------
-t - (v,m,k,l) = 3 - (5,4,5,1)
+t - (v,m,k,l) = 3 - (6,4,5,1)
 b = 4
 
 Optimization parameters:
@@ -23,3 +23,12 @@ verbose       = 2
 MemoryLimit   = 0
 check         = 1
 
+
+Runs:
+-----
+cost          = 0
+
+Statistics:
+-----------
+bestCost      = 0
+CPU-time      = 0.00

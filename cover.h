@@ -62,7 +62,7 @@ typedef int costDType;
 
 extern int v, k, t, m, b; /* global parameters */
 extern int localOpt, exhaust, pdoFlag;
-extern int randomStartFlag;
+extern int randomStartFlag, greedyStartFlag;
 extern float coolFact, initProb;
 extern int check;
 extern int testCount;
@@ -91,6 +91,7 @@ extern unsigned int PRNGseed;
 
 /* functions common to all modules */
 
+extern int compareVarieties(varietyType *a, varietyType *b);
 extern void coverError(int errno);
 
 /* error numbers */

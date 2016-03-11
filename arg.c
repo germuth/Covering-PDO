@@ -45,6 +45,7 @@ struct varstruct {
   {"exhaustive", "%d", &exhaust},
   {"pdo", "%d", &pdoFlag},
   {"randomStart", "%d", &randomStartFlag},
+  {"greedyStart", "%d", &greedyStartFlag},
   {"apprexp", "%d", &apprexp},
   {"OntheFly", "%d", &onTheFly},
   {"OF", "%d", &onTheFly},

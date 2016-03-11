@@ -18,8 +18,6 @@ PDO-Search    = 1
 apprexp       = 0
 OntheFly      = 0
 Pack          = 0
-log           = cover.log
-result        = cover.res
 SolX          = 0
 verbose       = 2
 MemoryLimit   = 0
@@ -33,4 +31,4 @@ cost          = 0
 Statistics:
 -----------
 bestCost      = 0
-CPU-time      = 0.23
+CPU-time      = 0.01

@@ -64,7 +64,7 @@
 float coolFact=0.99, initProb=0.5;
 //int v=4, k=2, t=2, m=2, b=6;
 //int v=5, k=3, t=2, m=2, b=4;
-int v=5, k=5, t=3, m=4, b=4;
+int v=6, k=5, t=3, m=4, b=4;
 int testCount = 1;
 int restrictedNeighbors = 0;
 float initialT = 1.0;
@@ -80,6 +80,7 @@ int localOpt = 0;
 int exhaust = 0; //lets enable by default for now
 int randomStartFlag = 1;
 int pdoFlag = 1;
+int greedyStartFlag = 0;
 int onTheFly = 0;
 int coverNumber = 1;
 int solX = 0;
@@ -232,9 +233,19 @@ void printParams(FILE *fp)
 
 
 /*
-** Here is the main program.
+** compareVarieties is needed for qsort int randomNeighbor()
 **
 */
+int compareVarieties(varietyType *a, varietyType *b) {
+  if(*a < *b)
+    return -1;
+  else {
+    if(*a > *b)
+      return 1;
+    else
+      return 0;
+  }
+}
 
 int main(int argc, char **argv) {
     costType retVal;

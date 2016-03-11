@@ -38,7 +38,42 @@ static costType initSolution(void) {
     for(i = 0; i < b; i++) {
         if(randomStartFlag){
             kset[i] = rnd(binCoef[v][k]);
-        }else if(greedyStart){
+        }else if(greedyStartFlag){
+            //look at first m-set not covered
+            //construct partial block that covers it
+            //if block has leftover spaces, attempt to cover next m-set
+
+            int idx = 0;
+            varietyType *block = calloc(k + 1, sizeof(int));
+
+            for(j = 0; j < binCoef[v][m]; j++){
+                if(k < idx+t){
+                    //not enough room to cover another one
+                    break;
+                }
+                if(!covered[j]){
+                    //this m-set not covered
+                    //take first t elements of m-set, and add to block
+                    varietyType *mset = calloc(m + 1, sizeof(int));
+                    unrankSubset(covered[j], mset, m);
+                    for(i2 = 0; i2 < t; i2++){
+                        block[i2] = mset[i2 + idx];
+                    }
+                    idx += t;
+                }
+            }
+            //fill in block with other stuff
+            varietyType *com = calloc(v - idx, sizeof(int));
+            makeComplement(block, com, v);
+            for(; idx < k; idx++){
+                block[idx] = com[rnd(v-idx)];//TODO hope it doesn't hit same number twice
+            }
+
+            qsort((char *) block, k, sizeof(varietyType), compareVarieties);
+            //block done
+            kset[i] = rankSubset(block, k);
+
+            /*
             //TODO this would be way, way, way too slow
             maxCount = 0;
             //go through all k-sets, and pick the best one?
@@ -56,6 +91,7 @@ static costType initSolution(void) {
                     maxCount = count;
                 }
             }
+            */
         } else{
             //TODO hardcoded for k=5
             int v1,v2,v3,v4,v5;

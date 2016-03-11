@@ -82,8 +82,6 @@ int randomStartFlag = 1;
 int pdoFlag = 1;
 int onTheFly = 0;
 int coverNumber = 1;
-char resultFileName[100] = {'c','o','v','e','r','.','r','e','s','\0'};
-char logFileName[100] = {'c','o','v','e','r','.','l','o','g','\0'};
 int solX = 0;
 long unsigned memoryLimit = 0;
 int searchB = 0;
@@ -224,10 +222,10 @@ void printParams(FILE *fp)
     "PDO-Search    = %d\n"
     "apprexp       = %d\n"
 	  "OntheFly      = %d\nPack          = %d\n"
-	  "log           = %s\nresult        = %s\nSolX          = %d\n"
+	  "SolX          = %d\n"
 	  "verbose       = %d\nMemoryLimit   = %lu\n"
 	  "check         = %d\n\n", endLimit, localOpt, exhaust, pdoFlag, apprexp, onTheFly,
-	  pack, logFileName, resultFileName, solX, verbose, memoryLimit,
+	  pack, solX, verbose, memoryLimit,
 	  check);
   fflush(fp);
 }
@@ -263,7 +261,7 @@ int main(int argc, char **argv) {
        asprintf(&logName, "./solutions/(%d,%d,%d,%d,%d) - %d.log", v,k,m,t,coverNumber,b);
   logFp = fopen(logName, "w");
   if(!logFp) {
-    fprintf(stderr, "Can't open log file %s.\n", logFileName);
+    fprintf(stderr, "Can't open log file %s.\n", logName);
     coverError(SEE_ABOVE_ERROR);
   }
   calculateBinCoefs();   /* compute tables for binomial coefficients */
@@ -285,18 +283,6 @@ int main(int argc, char **argv) {
   costSum = costSquareSum = 0;
   iterSum = 0;
 
-
-  /*
-  varietyType ss[3 + 1];
-  getFirstSubset(ss, 3);
-  do {
-    for(int j = 0; j < 4; j++) {
-        printf("%d ", ss[j]);
-    }
-    printf("\n");
-  }while( getNextSubset(ss, 3, 5) );
-  printf("done\n");
-  */
   //neighbour and cover tables
   computeTables(t, k, m, v);       /* compute tables for this design */
 
@@ -364,7 +350,7 @@ int main(int argc, char **argv) {
     asprintf(&resultName, "./solutions/(%d,%d,%d,%d,%d) - %d.res", v,k,m,t,coverNumber,b);
 	resFp = fopen(resultName, "w");
 	if(!resFp) {
-	  fprintf(stderr, "Can't open file %s.\n", resultFileName);
+	  fprintf(stderr, "Can't open file %s.\n", resultName);
 	  coverError(SEE_ABOVE_ERROR);
 	}
 	printSolution(resFp);

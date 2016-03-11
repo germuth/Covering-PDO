@@ -50,8 +50,6 @@ struct varstruct {
   {"OF", "%d", &onTheFly},
   {"Pack", "%d", &pack},
   {"P", "%d", &pack},
-  {"log", "%s", &logFileName},
-  {"result", "%s", &resultFileName},
   {"SolX", "%d", &solX},
   {"SX", "%d", &solX},
   {"verbose", "%d", &verbose},

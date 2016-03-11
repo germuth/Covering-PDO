@@ -1,9 +1,9 @@
+#include <math.h>
+#include <stdlib.h>
 #include "cover.h"
 #include "bincoef.h"
 #include "tables.h"
 #include "exp.h"
-#include <math.h>
-#include <stdlib.h>
 
 //always accept sideways moves
 //moves at the same level are counted together towards the number of moves needed to find better solution
@@ -71,8 +71,8 @@ static costType initSolution(void) {
 static void printProgress(void){
     printf("\rjdc\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
     jdc[0], jdc[1], jdc[2], jdc[3], jdc[4], jdc[5], jdc[6], jdc[7], jdc[8], jdc[9]);
-    printf("\rjdf\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d",
-    jdf[0], jdf[1], jdf[2], jdf[3], jdf[4], jdf[5], jdf[6], jdf[7], jdf[8], jdf[9]);
+    printf("\rjdf\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d",
+    jdf[0], jdf[1], jdf[2], jdf[3], jdf[4], jdf[5], jdf[6], jdf[7], jdf[8], jdf[9], currCost);
     printf("\033[F");
 }
 

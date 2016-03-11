@@ -1,6 +1,6 @@
 Design parameters:
 ------------------
-t - (v,m,k,l) = 5 - (16,6,6,1)
+t - (v,m,k,l) = 3 - (16,3,6,1)
 b = 230
 
 Optimization parameters:
@@ -18,8 +18,19 @@ PDO-Search    = 1
 apprexp       = 0
 OntheFly      = 0
 Pack          = 0
+log           = cover.log
+result        = cover.res
 SolX          = 0
 verbose       = 2
 MemoryLimit   = 0
 check         = 1
 
+
+Runs:
+-----
+cost          = 0
+
+Statistics:
+-----------
+bestCost      = 0
+CPU-time      = 0.00

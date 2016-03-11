@@ -237,166 +237,170 @@ void printParams(FILE *fp)
 */
 
 int main(int argc, char **argv) {
-  costType retVal;
-  int j, i, count, bcounter;
-  int iterSum;
-  struct rusage before, after;
-  costType costSum, finalCost = 0, costSquareSum;
-  float CPU, CPUsum;
-  int solFound = 0;
-  int bestCost = -1;
-  char *logName, *resultName;
-  FILE *logFp, *resFp;
-  int hiB = -1, loB = -1;
-  float costSD = 0.;
+    costType retVal;
+    int j, i, count, bcounter;
+    int iterSum;
+    struct rusage before, after;
+    costType costSum, finalCost = 0, costSquareSum;
+    float CPU, CPUsum;
+    int solFound = 0;
+    int bestCost = -1;
+    char *logName, *resultName;
+    FILE *logFp, *resFp;
+    int hiB = -1, loB = -1;
+    float costSD = 0.;
 
-  randomize();
+    randomize();
 
-  parseArguments(argc, argv);
+    parseArguments(argc, argv);
 
-  if(verbose)
+    if(verbose)
     printf("\n"
-	   "cover 1.0a - find covering designs using simulated annealing\n"
-	   "============================================================\n\n");
-       asprintf(&logName, "./solutions/(%d,%d,%d,%d,%d) - %d.log", v,k,m,t,coverNumber,b);
-  logFp = fopen(logName, "w");
-  if(!logFp) {
-    fprintf(stderr, "Can't open log file %s.\n", logName);
-    coverError(SEE_ABOVE_ERROR);
-  }
-  calculateBinCoefs();   /* compute tables for binomial coefficients */
-  calculate_exps();      /* and approximate exponentiation           */
-  if(!Lset)
-    L = (int) (LFact * k * (v - k) * b + 0.5);
+    "cover 1.0a - find covering designs using simulated annealing\n"
+    "============================================================\n\n");
+    asprintf(&logName, "./solutions/(%d,%d,%d,%d,%d) - %d.log", v,k,m,t,coverNumber,b);
+    logFp = fopen(logName, "w");
+    if(!logFp) {
+        fprintf(stderr, "Can't open log file %s.\n", logName);
+        coverError(SEE_ABOVE_ERROR);
+    }
+    calculateBinCoefs();   /* compute tables for binomial coefficients */
+    calculate_exps();      /* and approximate exponentiation           */
+    if(!Lset){
+        L = (int) (LFact * k * (v - k) * b + 0.5);
+    }
     /* L = LFact * neighborhood size, if not spesified otherwise */
-  if(searchB)
-    bIs(newBAfterSuccess(hiB = b));
-  else
-    bIs(b);          /* number of k-sets */
+    if(searchB){
+        bIs(newBAfterSuccess(hiB = b));
+    } else{
+        bIs(b);          /* number of k-sets */
+    }
 
-  if(verbose && !pdoFlag)
-    printParams(stdout);
-  printParams(logFp);
-  fprintf(logFp, "\nRuns:\n-----\n");
+    if(verbose && !pdoFlag){
+        printParams(stdout);
+    }
+    printParams(logFp);
+    fprintf(logFp, "\nRuns:\n-----\n");
 
-  CPUsum = 0.0;
-  costSum = costSquareSum = 0;
-  iterSum = 0;
+    CPUsum = 0.0;
+    costSum = costSquareSum = 0;
+    iterSum = 0;
 
-  //neighbour and cover tables
-  computeTables(t, k, m, v);       /* compute tables for this design */
+    //neighbour and cover tables
+    computeTables(t, k, m, v);       /* compute tables for this design */
 
-  printf("Searching for a (%d,%d,%d,%d,%d) covering in %d blocks. (v,k,m,t,lamda)\n",
+    printf("Searching for a (%d,%d,%d,%d,%d) covering in %d blocks. (v,k,m,t,lamda)\n",
     v,k,m,t,coverNumber,b);
 
-  time_t rawtime;
-  struct tm * timeinfo;
-  time ( &rawtime );
-  timeinfo = localtime ( &rawtime );
-  printf ( "Started at %s\n", asctime (timeinfo) );
+    time_t rawtime;
+    struct tm * timeinfo;
+    time ( &rawtime );
+    timeinfo = localtime ( &rawtime );
+    printf ( "Started at %s\n", asctime (timeinfo) );
 
-  do {
-    for(count = 0; count < testCount; count++) {
-      iterCounter = 0;
-      getrusage(RUSAGE_SELF, &before);
-      if(exhaust){
-          initSolution();
-          finalCost = bruteforce();
-      }else if(pdoFlag){
-          finalCost = pdo();
-      }else if(localOpt){
-          finalCost = localOptimization(L, endLimit);
-      }else {
-          finalCost = simulatedAnnealing(coolFact, initProb, L, frozen, endLimit);
-      }
-      if(finalCost <= endLimit) {
-        solFound = 1;
-        sortSolution();
-        count = testCount; /* need no more runs */
-      }
-      if(bestCost == -1 || finalCost < bestCost) {
-	       bestCost = finalCost;
-      }
-      getrusage(RUSAGE_SELF, &after);
-      CPU = after.ru_utime.tv_sec + after.ru_utime.tv_usec / 1000000.0 -
-	     (before.ru_utime.tv_sec + before.ru_utime.tv_usec / 1000000.0);
-      costSum += finalCost;
-      costSquareSum += finalCost * finalCost;
-      if(verbose)
-	printf("Result:\n"
-	       "-------\n"
-	       "finalCost     = %d\n"
-	       "CPU-time      = %.2f\n"
-	       "Iterations    = %d\n"
-	       "EndTemp       = %.3f\n\n",
-	       finalCost, CPU, iterCounter, endT);
-      fprintf(logFp, "cost          = %d\n", finalCost);
-      fflush(logFp);
-      if(verbose)
-	if(finalCost <= endLimit) {
-	  printf("Solution:\n"
-		 "---------\n");
-	} else {
-	  printf("EndLimit was not reached.\n\n");
-	  if(verbose >= 2) {
-	    printf("Inadequate solution:\n"
-		   "--------------------\n");
-	    printSolution(stdout);
-	  }
-	}
-      if(finalCost <= endLimit) {
-	if(verbose)
-	  printSolution(stdout);
-    asprintf(&resultName, "./solutions/(%d,%d,%d,%d,%d) - %d.res", v,k,m,t,coverNumber,b);
-	resFp = fopen(resultName, "w");
-	if(!resFp) {
-	  fprintf(stderr, "Can't open file %s.\n", resultName);
-	  coverError(SEE_ABOVE_ERROR);
-	}
-	printSolution(resFp);
-	fclose(resFp);
-      }
-      if(check)
-	if(checkSolution() != finalCost)
-	  coverError(CHECK_SOLUTION_ERROR);
-	else {
-	  if(verbose)
-	    printf("Final cost check OK.\n\n");
-	}
-      else
-	if(verbose)
-	  printf("\n");
-      CPUsum += CPU;
-      iterSum += iterCounter;
-    } /* for(count... */
-  } while(searchBContinues(finalCost<=endLimit, &hiB, &loB));
-  if(testCount > 1)
-    costSD = sqrt((float) costSquareSum / (testCount - 1) -
-		  (float) costSum * (float) costSum / (float) testCount /
-		  (float) (testCount - 1));
-  if(verbose) {
-    printf("Statistics:\n"
-	   "-----------\n"
-	   "averageCost   = %.3f\n"
-	   "av. CPU-time  = %.2f\n"
-	   "av.iterations = %.2f\n"
-	   "bestCost      = %d\n",
-	   (float) costSum / (float) testCount,
-	   CPUsum / (float) testCount,
-	   (float) iterSum / (float) testCount,
-	   bestCost);
-    if(testCount > 1) {
-      printf("costStandardDeviation = %.3f\n", costSD);
+    do {
+        for(count = 0; count < testCount; count++) {
+            iterCounter = 0;
+            getrusage(RUSAGE_SELF, &before);
+            if(exhaust){
+                initSolution();
+                finalCost = bruteforce();
+            }else if(pdoFlag){
+                finalCost = pdo();
+            }else if(localOpt){
+                finalCost = localOptimization(L, endLimit);
+            }else {
+                finalCost = simulatedAnnealing(coolFact, initProb, L, frozen, endLimit);
+            }
+            if(finalCost <= endLimit) {
+                solFound = 1;
+                sortSolution();
+                count = testCount; /* need no more runs */
+            }
+            if(bestCost == -1 || finalCost < bestCost) {
+                bestCost = finalCost;
+            }
+            getrusage(RUSAGE_SELF, &after);
+            CPU = after.ru_utime.tv_sec + after.ru_utime.tv_usec / 1000000.0 -
+            (before.ru_utime.tv_sec + before.ru_utime.tv_usec / 1000000.0);
+            costSum += finalCost;
+            costSquareSum += finalCost * finalCost;
+            if(verbose){
+                printf("Result:\n" "-------\n"
+                    "finalCost     = %d\n"
+                    "CPU-time      = %.2f\n"
+                    "Iterations    = %d\n"
+                    "EndTemp       = %.3f\n\n",
+                    finalCost, CPU, iterCounter, endT);
+            }
+            fprintf(logFp, "cost          = %d\n", finalCost);
+            fflush(logFp);
+            if(verbose){
+                if(finalCost <= endLimit) {
+                    printf("Solution:\n" "---------\n");
+                } else {
+                    printf("EndLimit was not reached.\n\n");
+                    if(verbose >= 2) {
+                        printf("Inadequate solution:\n" "--------------------\n");
+                        printSolution(stdout);
+                    }
+                }
+            }
+            if(finalCost <= endLimit) {
+                if(verbose) {
+                    printSolution(stdout);
+                }
+                asprintf(&resultName, "./solutions/(%d,%d,%d,%d,%d) - %d.res", v,k,m,t,coverNumber,b);
+                resFp = fopen(resultName, "w");
+                if(!resFp) {
+                    fprintf(stderr, "Can't open file %s.\n", resultName);
+                    coverError(SEE_ABOVE_ERROR);
+                }
+                printSolution(resFp);
+                fclose(resFp);
+            }
+            if(check) {
+                if(checkSolution() != finalCost){
+                    coverError(CHECK_SOLUTION_ERROR);
+                } else if(verbose){
+                    printf("Final cost check OK.\n\n");
+                }
+            } else if(verbose){
+                printf("\n");
+            }
+            CPUsum += CPU;
+            iterSum += iterCounter;
+        } /* for(count... */
+    } while(searchBContinues(finalCost<=endLimit, &hiB, &loB));
+    if(testCount > 1){
+        costSD = sqrt((float) costSquareSum / (testCount - 1) -
+            (float) costSum * (float) costSum / (float) testCount /
+            (float) (testCount - 1));
     }
-  }
-  fprintf(logFp, "\nStatistics:\n-----------\nbestCost      = %d\n"
-	  "CPU-time      = %.2f\n", bestCost, CPUsum);
-  if(testCount > 1)
-    fprintf(logFp, "costStandardDeviation = %.3f\n", costSD);
+    if(verbose) {
+        printf("Statistics:\n"
+            "-----------\n"
+            "averageCost   = %.3f\n"
+            "av. CPU-time  = %.2f\n"
+            "av.iterations = %.2f\n"
+            "bestCost      = %d\n",
+            (float) costSum / (float) testCount,
+            CPUsum / (float) testCount,
+            (float) iterSum / (float) testCount,
+            bestCost);
+        if(testCount > 1) {
+            printf("costStandardDeviation = %.3f\n", costSD);
+        }
+    }
+    fprintf(logFp, "\nStatistics:\n-----------\nbestCost      = %d\n"
+        "CPU-time      = %.2f\n", bestCost, CPUsum);
+    if(testCount > 1){
+        fprintf(logFp, "costStandardDeviation = %.3f\n", costSD);
+    }
 
-  fflush(stdout);
-  fflush(logFp);
+    fflush(stdout);
+    fflush(logFp);
 
-  freeTables();
-  return !solFound; /* returns 0 if a solution was found */
+    freeTables();
+    return !solFound; /* returns 0 if a solution was found */
 }

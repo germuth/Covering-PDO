@@ -29,7 +29,7 @@ static void updateJDF(void){
 }
 
 static costType initSolution(void) {
-    int i, j;
+    int i, j, i2, count, maxCount, l;
     costType initCost;
     coveredType *ptr;
     rankType *coveringsPtr;
@@ -38,7 +38,25 @@ static costType initSolution(void) {
     for(i = 0; i < b; i++) {
         if(randomStartFlag){
             kset[i] = rnd(binCoef[v][k]);
-        }else{
+        }else if(greedyStart){
+            //TODO this would be way, way, way too slow
+            maxCount = 0;
+            //go through all k-sets, and pick the best one?
+            for(j = 0; j < binCoef[v][k]; j++){
+                rankType block = (rankType) j;
+                coveringsPtr = coverings;
+                count = 0;
+                //count the number of m-sets this block would cover, that arent' already covered
+                for(i2 = 0; i2 < coverLen - 1; i2++){
+                    if(!covered[coveringsPtr[i2]]){
+                        count++;
+                    }
+                }
+                if(count > maxCount){
+                    maxCount = count;
+                }
+            }
+        } else{
             //TODO hardcoded for k=5
             int v1,v2,v3,v4,v5;
             scanf("%d %d %d %d %d",&v1,&v2,&v3,&v4,&v5);

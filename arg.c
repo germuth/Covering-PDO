@@ -24,6 +24,7 @@ struct varstruct {
   {"m", "%d", &m},
   {"v", "%d", &v},
   {"l", "%d", &coverNumber}, /* lambda is coverNumber in the program! */
+  {"lambda", "%d", &coverNumber}, /* lambda is coverNumber in the program! */
   {"b", "%d", &b},
   {"TestCount", "%d", &testCount},
   {"TC", "%d", &testCount},

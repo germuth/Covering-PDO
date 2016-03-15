@@ -1,7 +1,7 @@
 Design parameters:
 ------------------
-t - (v,m,k,l) = 3 - (12,4,5,1)
-b = 12
+t - (v,m,k,l) = 2 - (17,2,5,4)
+b = 50
 
 Optimization parameters:
 ------------------------
@@ -27,3 +27,12 @@ verbose       = 2
 MemoryLimit   = 0
 check         = 1
 
+
+Runs:
+-----
+cost          = 0
+
+Statistics:
+-----------
+bestCost      = 0
+CPU-time      = 0.01

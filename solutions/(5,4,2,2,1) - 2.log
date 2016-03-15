@@ -1,7 +1,7 @@
 Design parameters:
 ------------------
-t - (v,m,k,l) = 3 - (12,4,5,1)
-b = 12
+t - (v,m,k,l) = 2 - (5,2,4,1)
+b = 2
 
 Optimization parameters:
 ------------------------
@@ -17,7 +17,7 @@ exhaustive    = 0
 PDO-Search    = 1
 PDO-K         = 10
 PDO-J         = 2
-PDO-Print     = 2
+PDO-Print     = 0
 PDO-Print-Freq= 1
 apprexp       = 0
 OntheFly      = 0
@@ -27,12 +27,3 @@ verbose       = 2
 MemoryLimit   = 0
 check         = 1
 
-
-Runs:
------
-cost          = 0
-
-Statistics:
------------
-bestCost      = 0
-CPU-time      = 0.03

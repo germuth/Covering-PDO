@@ -28,6 +28,11 @@ static void updateJDF(void){
     ans *= (double) jdc[currCost]; //do the multiplication after division, not before
 
     jdf[currCost] = (int)ceil(ans);
+
+    //only try up to a million times?
+    if(jdf[currCost] > 1000000){
+        jdf[currCost] = 1000000;
+    }
 }
 
 static costType initSolution(void) {
@@ -40,6 +45,7 @@ static costType initSolution(void) {
     for(i = 0; i < b; i++) {
         if(randomStartFlag){
             kset[i] = rnd(binCoef[v][k]);
+            //printf("%d\n", i);
         }else if(greedyStartFlag){
             //look at first m-set not covered
             //construct partial block that covers it
@@ -222,7 +228,7 @@ costType pdo() {
         costDifference = computeNeighbor();
     }
     if(pdoPrint){
-        printf("\n\n\n");
+        printf("\n\n\n\n");
     }
 
     return 0;

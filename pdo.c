@@ -30,8 +30,8 @@ static void updateJDF(void){
     jdf[currCost] = (int)ceil(ans);
 
     //only try up to a million times?
-    if(jdf[currCost] > 1000000){
-        jdf[currCost] = 1000000;
+    if(pdoMaxJDF && jdf[currCost] > pdoMaxJDF){
+        jdf[currCost] = pdoMaxJDF;
     }
 }
 

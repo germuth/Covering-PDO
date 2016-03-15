@@ -85,6 +85,7 @@ int pdoK = 10;
 int pdoJ = 2;
 int pdoPrint = 2;
 int pdoPrintFreq = 1;
+int pdoMaxJDF = 5000000;
 int onTheFly = 0;
 int coverNumber = 1;
 int solX = 0;
@@ -229,11 +230,12 @@ void printParams(FILE *fp)
     "PDO-J         = %d\n"
     "PDO-Print     = %d\n"
     "PDO-Print-Freq= %d\n"
+    "PDO-Max-JDF   = %d\n"
     "apprexp       = %d\n"
 	  "OntheFly      = %d\nPack          = %d\n"
 	  "SolX          = %d\n"
 	  "verbose       = %d\nMemoryLimit   = %lu\n"
-	  "check         = %d\n\n", endLimit, localOpt, exhaust, pdoFlag, pdoK, pdoJ, pdoPrint, pdoPrintFreq,
+	  "check         = %d\n\n", endLimit, localOpt, exhaust, pdoFlag, pdoK, pdoJ, pdoPrint, pdoPrintFreq, pdoMaxJDF,
       apprexp, onTheFly, pack, solX, verbose, memoryLimit, check);
   fflush(fp);
 }

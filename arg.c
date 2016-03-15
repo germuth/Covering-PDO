@@ -49,6 +49,7 @@ struct varstruct {
   {"pdoJ", "%d", &pdoJ},
   {"pdoPrint", "%d", &pdoPrint},
   {"pdoPrintFreq", "%d", &pdoPrintFreq},
+  {"pdoMaxJDF", "%d", &pdoMaxJDF},
   {"randomStart", "%d", &randomStartFlag},
   {"greedyStart", "%d", &greedyStartFlag},
   {"apprexp", "%d", &apprexp},

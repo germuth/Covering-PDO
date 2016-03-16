@@ -84,7 +84,7 @@ int pdoFlag = 1;
 int pdoK = 10;
 int pdoJ = 2;
 int pdoPrint = 2;
-int pdoPrintFreq = 1;
+int pdoPrintFreq = 50;
 int pdoMaxJDF = 5000000;
 int onTheFly = 0;
 int coverNumber = 1;
@@ -276,7 +276,7 @@ int main(int argc, char **argv) {
 
     if(verbose)
     printf("\n"
-    "cover 1.0a - find covering designs using simulated annealing\n"
+    "cover-PDO v1.0 - find covering designs using PDO\n"
     "============================================================\n\n");
     asprintf(&logName, "./solutions/(%d,%d,%d,%d,%d) - %d.log", v,k,m,t,coverNumber,b);
     logFp = fopen(logName, "w");
@@ -309,8 +309,13 @@ int main(int argc, char **argv) {
     //neighbour and cover tables
     computeTables(t, k, m, v);       /* compute tables for this design */
 
-    printf("Searching for a (%d,%d,%d,%d,%d) covering in %d blocks. (v,k,m,t,lamda)\n",
-    v,k,m,t,coverNumber,b);
+    if(Pack){
+        printf("Searching for a (%d,%d,%d,%d,%d) packing in %d blocks. (v,k,m,t,lambda)\n",
+            v,k,m,t,coverNumber,b);
+    }else{
+        printf("Searching for a (%d,%d,%d,%d,%d) covering in %d blocks. (v,k,m,t,lambda)\n",
+            v,k,m,t,coverNumber,b);
+    }
 
     time_t rawtime;
     struct tm * timeinfo;

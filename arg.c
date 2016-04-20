@@ -26,41 +26,27 @@ struct varstruct {
   {"l", "%d", &coverNumber}, /* lambda is coverNumber in the program! */
   {"lambda", "%d", &coverNumber}, /* lambda is coverNumber in the program! */
   {"b", "%d", &b},
-  {"TestCount", "%d", &testCount},
-  {"TC", "%d", &testCount},
-  {"CoolingFactor", "%f", &coolFact},
-  {"CF", "%f", &coolFact},
-  {"InitProb", "%f", &initProb},
-  {"IP", "%f", &initProb},
-  {"frozen", "%d", &frozen},
-  {"RestrNeighbor", "%d", &restrictedNeighbors},
-  {"RN", "%d", &restrictedNeighbors},
-  {"InitTemp", "%f", &initialT},
-  {"IT", "%f", &initialT},
-  {"L", "%d", &L},
-  {"LFact", "%f", &LFact},
-  {"LF", "%f", &LFact},
-  {"EndLimit", "%d", &endLimit},
+  {"finalB", "%d", &finalB},
+  {"FB", "%d", &finalB},
+  {"bSearch", "%d", &bSearch},
+  {"BS", "%d", &bSearch},
+  {"endLimit", "%d", &endLimit},
   {"EL", "%d", &endLimit},
-  {"local", "%d", &localOpt},
-  {"exhaustive", "%d", &exhaust},
   {"pdo", "%d", &pdoFlag},
-  {"pdoK", "%d", &pdoK},
+  {"pdoK", "%f", &pdoK},
   {"pdoJ", "%d", &pdoJ},
   {"pdoPrint", "%d", &pdoPrint},
   {"pdoPrintFreq", "%d", &pdoPrintFreq},
   {"pdoMaxJDF", "%d", &pdoMaxJDF},
-  {"randomStart", "%d", &randomStartFlag},
+  {"startFromFile", "%d", &startFromFileFlag},
   {"greedyStart", "%d", &greedyStartFlag},
-  {"apprexp", "%d", &apprexp},
-  {"OntheFly", "%d", &onTheFly},
+  {"ontheFly", "%d", &onTheFly},
   {"OF", "%d", &onTheFly},
-  {"Pack", "%d", &pack},
+  {"pack", "%d", &pack},
   {"P", "%d", &pack},
-  {"SolX", "%d", &solX},
+  {"solX", "%d", &solX},
   {"SX", "%d", &solX},
-  {"verbose", "%d", &verbose},
-  {"MemoryLimit", "%lu", &memoryLimit},
+  {"memoryLimit", "%lu", &memoryLimit},
   {"ML", "%lu", &memoryLimit},
   {"check", "%d", &check},
   {"SearchB", "%d", &searchB},
@@ -125,10 +111,6 @@ void parseArguments(int argc, char **argv)
 	found++;
 	if(sscanf(value, vars[j].format, vars[j].varaddr) != 1)
 	  errmsg(argv[i]);
-	if(!strcmp(name, "IT") || !strcmp(name, "InitTemp"))
-	  Tset = 1;
-	if(!strcmp(name, "L"))
-	  Lset = 1;
 	if(!strcmp(name, "m") && !t_defined) { /* default: t=m if either one */
 	  t = m;                               /* is not given */
 	  m_defined = 1;

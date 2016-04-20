@@ -17,15 +17,26 @@ int currCost;
 int counter;
 int maxCost = 0;
 int printCount = 0;
+rankType *oldKSet;
 
 static void updateJDF(void){
-    /* WAS GETTING OVERFLOWS SOMETIMES
+    /*
     double ans = jdc[currCost] * jdf[currCost] + counter;
     ans /= (double)(jdc[currCost] + 1);
     */
-    double ans = jdf[currCost] + counter;
+
+    //Jan de Heer, more efficient way to compute
+    //and avoids overflows from initial multiplication
+    double ans = counter - jdf[currCost];
     ans /= (double)(jdc[currCost] + 1);
-    ans *= (double) jdc[currCost]; //do the multiplication after division, not before
+    ans += (double)(jdf[currCost]);
+    //derivation is as follows:
+    // (jdc[c]*jdf[c] + counter) / (jdf[c] + 1)
+    // (jdc[c]*jdf[c] + counter + jdf[c] - jdf[c]) / (jdf[c] + 1)
+    // (jdc[c]*jdf[c] + jdf[c]) / (jdf[c] + 1) + (counter - jdf[c]) / (jdf[c] + 1)
+    // jdf[c]*(jdc[c + 1]) / (jdf[c] + 1)      + (counter - jdf[c]) / (jdf[c] + 1)
+    // jdf[c]                                  + (counter - jdf[c]) / (jdf[c] + 1)
+    // jdf[c] + (counter - jdf[c]) / (jdf[c] + 1)
 
     jdf[currCost] = (int)ceil(ans);
 
@@ -41,12 +52,23 @@ static costType initSolution(void) {
     coveredType *ptr;
     rankType *coveringsPtr;
 
+    FILE *fp = fopen("startFile.txt", "r");
 
     for(i = 0; i < b; i++) {
-        if(randomStartFlag){
-            kset[i] = rnd(binCoef[v][k]);
-            //printf("%d\n", i);
-        }else if(greedyStartFlag){
+        if(startFromFileFlag && !bSearch){
+
+            //TODO add some sort of verification here and print error if file sucks
+            varietyType *block = calloc(k+1, sizeof(int));
+            for(j = 0; j < k; j++){
+                int point;
+                fscanf(fp, "%d", &point);
+                block[j] = point;
+            }
+            block[k] = maxv + 1;
+            // printf("%d %d %d %d %d %d\n", block[0],block[1],block[2],block[3],block[4], block[5]);
+            kset[i] = rankSubset(block, k);
+            // printf("%d\n", kset[i]);
+        }else if(greedyStartFlag && !bSearch){
             //look at first m-set not covered
             //construct partial block that covers it
             //if block has leftover spaces, attempt to cover next m-set
@@ -80,38 +102,10 @@ static costType initSolution(void) {
             qsort((char *) block, k, sizeof(varietyType), compareVarieties);
             //block done
             kset[i] = rankSubset(block, k);
-
-            /*
-            //TODO this would be way, way, way too slow
-            maxCount = 0;
-            //go through all k-sets, and pick the best one?
-            for(j = 0; j < binCoef[v][k]; j++){
-                rankType block = (rankType) j;
-                coveringsPtr = coverings;
-                count = 0;
-                //count the number of m-sets this block would cover, that arent' already covered
-                for(i2 = 0; i2 < coverLen - 1; i2++){
-                    if(!covered[coveringsPtr[i2]]){
-                        count++;
-                    }
-                }
-                if(count > maxCount){
-                    maxCount = count;
-                }
-            }
-            */
-        } else{
-            //TODO hardcoded for k=5
-            int v1,v2,v3,v4,v5;
-            scanf("%d %d %d %d %d",&v1,&v2,&v3,&v4,&v5);
-            varietyType *block = calloc(6, sizeof(int));
-            block[0] = v1 - 1;
-            block[1] = v2 - 1;
-            block[2] = v3 - 1;
-            block[3] = v4 - 1;
-            block[4] = v5 - 1;
-            block[5] = maxv + 1;
-            kset[i] = rankSubset(block, k);
+        } else if( bSearch == 2 && startB != b){
+            kset[i] = oldKSet[i]; //copy it over
+        } else {
+            kset[i] = rnd(binCoef[v][k]);
         }
         if(onTheFly) {
             calculateOneCovering(kset[i], coverings);
@@ -123,14 +117,20 @@ static costType initSolution(void) {
             covered[coveringsPtr[j]]++;
         }
     }
-    for(i = 0, initCost = (costType) 0, ptr = covered; i < coveredLen;
-    i++, ptr++)
-    initCost += costs[*ptr];
+    if(bSearch == 2){
+        free((void *) oldKSet);
+    }
+    fclose(fp);
+    for(i = 0, initCost = (costType) 0, ptr = covered; i < coveredLen; i++, ptr++)
+        initCost += costs[*ptr];
 
     return initCost;
 }
 
 static void printProgress(void){
+    if(pdoPrint == 0){
+        return;
+    }
     int indices[] = {0,1,2,3,4,5,6,7,8,9};
     if(pdoPrint == 2){
         //print first 10 costs that have been found rather than just first 10
@@ -144,6 +144,11 @@ static void printProgress(void){
         }
         if(curr != 10){
             qsort((int *)indices, 10, sizeof(int), compareVarieties);
+        }
+    }else if(pdoPrint == 3){ //show 10 levels above current
+        int i = 0;
+        for(; i < 10; i++){
+            indices[i] = currCost + i;
         }
     }
     printf("                                                                                                             ");
@@ -168,7 +173,36 @@ static void printProgress(void){
 costType pdo() {
     int i;
 
+    if(b > maxkSetCount){
+        coverError(B_TOO_LARGE);
+    }
+    //blank covering data
+    for(i = 0; i < binCoef[v][m]; i++){
+        covered[i] = 0;
+    }
+
+    //need to allocate kset, costs, costds
+    if(bSearch == 2 && startB != b){ //allocate new storage if we are copying over
+        oldKSet = kset;
+        // printf("%d %d\n", oldKSet[0], kset[0]);
+        if(!(kset = (rankType *) malloc(b * sizeof(rankType)))){
+            coverError(MEM_ALLOC_ERROR);
+        }
+        // printf("%d %d\n", oldKSet[0], kset[0]);
+    }else{ //reallocate if we are overwriting
+        free((void *) kset);
+        free((void *) costs);
+        free((void *) costds);
+        if(!(kset = (rankType *) malloc(b * sizeof(rankType))) ||
+                !(costs = (costType *) malloc((b + 1) * sizeof(costType))) ||
+                !(costds = (costDType *) malloc((b + 1) * sizeof(costDType))))
+        // if(!(kset = (rankType *) realloc((char *) kset, b * sizeof(rankType))) ||
+        //         !(costs = (costType *) realloc((char *) costs, (b + 1) * sizeof(costType))) ||
+        //         !(costds = (costDType *) realloc((char *) costds, (b + 1) * sizeof(costDType))))
+            coverError(MEM_ALLOC_ERROR);
+    }
     //costs[lambda] holds costs for covering a single m-set lambda times
+    maxCost = 0;
     calculateCosts();
     for(i = 0; i < b; i++){
         if(costs[i] > maxCost){
@@ -182,7 +216,7 @@ costType pdo() {
     //Jump Down Function: cost -> moves needed to find good neighbour
     jdf = calloc(maxCost, sizeof(int));
     for(i = 0; i < maxCost; i++){
-        jdf[i] = pdoK * neighborLen;
+        jdf[i] = (int)(pdoK * b * neighborLen);
     }
     //Jump Down Count: jdc[i] = number of times we have jumped down from a solution at level i
     jdc = calloc(maxCost, sizeof(int));
@@ -198,7 +232,7 @@ costType pdo() {
 
     printProgress();
 
-    while( currCost > 0){
+    while( currCost > endLimit){
         counter++;
         if( costDifference > 0) { //if( neighborCost > currCost){
             if( counter > pdoJ * jdf[currCost] ){ //TODO parameter here
@@ -231,5 +265,162 @@ costType pdo() {
         printf("\n\n\n\n");
     }
 
-    return 0;
+    return currCost;//found solution
+}
+
+/*
+** `setNumber' is the index to the table `kset'. `setNumber' indicates
+** the index of the k-set in the proposed change. The current solution
+** can be changed to the proposed next solution by assigning
+** kset[setNumber] = nextS. `stored', `storedPtr', `currSto' and
+**`nextSto' are for on-the-fly annealing. `costs[x]' holds the difference
+** of costs associated with a m-set covered x times and x+1 times.
+*/
+static setNumber;
+static rankType nextS;
+static rankType stored[2];
+static int currSto, nextSto;
+rankType *storedPtr[2];
+/*
+** Populates costs array
+** Contains the punishment for how many times it was covered
+** For example costs[0] is how much cost is added to a solution if you cover
+** a single m-set 0 times
+** costs[3] is if you cover it 3 times
+** if lambda is 1 we would expect [1,0,0,0,0,0,0,0]
+**  for a covering design (there is no cost for over-covering)
+*/
+
+void calculateCosts(void) {
+  int i;
+
+  if(pack) /* packing design */
+    for(i = 0; i <= b; i++)
+      if(i < coverNumber)
+	costs[i] = (costType) 0;
+      else
+	costs[i] = (costDType) (i - coverNumber);
+  else     /* covering design */
+    for(i = 0; i <= b; i++)
+      if(i < coverNumber)
+	costs[i] = (costType) (coverNumber - i);
+      else
+	costs[i] = 0;
+  for(i = 0; i < b; i++)
+    costds[i] = costs[i] - costs[i + 1];
+}
+
+/*
+** randomNeighbor() computes the rank of a random neigbor of the k-set with
+** rank `curr'.
+*/
+static rankType randomNeighbor(rankType curr)
+{
+  varietyType subset[maxv + 1];
+  varietyType csubset[maxv + 1];
+
+  unrankSubset(curr, subset, k);
+  makeComplement(subset, csubset, v);
+  subset[rnd(k)] = csubset[rnd(v-k)];
+  qsort((char *) subset, k, sizeof(varietyType), compareVarieties);
+  return rankSubset(subset, k);
+}
+
+
+/*
+** computeNeighbor() calculates the cost difference between the current
+** solution and a random neighbor of the current solution. It employs
+** the sentinels at the end of the covered sets of each k-set. (That's
+** why they were put there in calculateNeighbors().)
+**
+*/
+
+costType computeNeighbor(void)
+{
+  costType costDelta = 0;
+
+  int i;
+  rankType currS;
+  rankType *currPtr, *nextPtr;
+
+  setNumber = rnd(b);
+
+  currS = kset[setNumber];
+  nextS = onTheFly ? randomNeighbor(currS) :
+    neighbors[currS * neighborLen + rnd(neighborLen)];
+
+  if(onTheFly) {
+    currPtr = NULL;
+    for(i = 0; i < 2; i++)
+      if(currS == stored[i]) {
+          currPtr = storedPtr[i];
+          currSto = i;
+      }
+    nextPtr = NULL;
+    for(i = 0; i < 2; i++)
+      if(nextS == stored[i]) {
+          nextPtr = storedPtr[i];
+          nextSto = i;
+      }
+    for(i = 0; !currPtr; i++)
+      if(nextSto != i) {
+          storedPtr[i] = currPtr = coverings + i * coverLen;
+          currSto = i;
+          stored[i] = currS;
+          calculateOneCovering(currS, currPtr);
+      }
+    for(i = 0; !nextPtr; i++)
+      if(currSto != i) {
+          storedPtr[i] = nextPtr = coverings + i * coverLen;
+          nextSto = i;
+          stored[i] = nextS;
+          calculateOneCovering(nextS, nextPtr);
+      }
+  }
+  else {
+    currPtr = coverings + currS * coverLen;
+    nextPtr = coverings + nextS * coverLen;
+  }
+
+  for(i = 0; i < (coverLen - 1) * 2; i++)
+    if(*currPtr == *nextPtr) {
+      currPtr++;
+      nextPtr++;
+      i++;
+    }
+    else if(*currPtr < *nextPtr) {
+      costDelta += costds[covered[*currPtr++] - 1];
+    }
+    else
+      costDelta -= costds[covered[*nextPtr++]];
+
+  return costDelta;
+}
+
+
+/*
+** acceptNeighbor() changes the current solution to the latest solution
+** computed.
+*/
+
+void acceptNeighbor(void)
+{
+  int i;
+  rankType currS;
+  rankType *coveringsPtr;
+
+  currS = kset[setNumber];
+  if(onTheFly)
+    coveringsPtr = coverings + currSto * coverLen;
+  else
+    coveringsPtr = coverings + currS * coverLen;
+  for(i = 0; i < coverLen - 1; i++)
+    covered[coveringsPtr[i]]--;
+  if(onTheFly)
+    coveringsPtr = coverings + nextSto * coverLen;
+  else
+    coveringsPtr = coverings + nextS * coverLen;
+  for(i = 0; i < coverLen - 1; i++)
+    covered[coveringsPtr[i]]++;
+  kset[setNumber] = nextS;
 }

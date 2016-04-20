@@ -1,2 +1,0 @@
-costType bruteforce();
-costType initSolution();

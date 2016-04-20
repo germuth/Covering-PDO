@@ -21,17 +21,22 @@
 #define min(X,Y) ((X) < (Y) ? (X) : (Y))
 
 
-#define randomize() srandom((int)time(NULL))
 /* initialize random number generator */
+//if windows
+#define randomize() srand((int)time(NULL))
+#define setPRNGseed(X) srand(X)
+#define rnd(num) (rand() % (num))
+//#define rnd(num) 13
+#define random01() ((double) rand() / 32767)
+//if UNIX
 
-#define setPRNGseed(X) srandom(X)
+//if windows
 /* give the seed X for the random number generator */
 
-#define rnd(num) (random() % (num))
+
 /* gives an integer random number between 0 and num - 1, inclusive */
 
 #define MAXRANDOM INT_MAX
-#define random01() ((double) random() / MAXRANDOM)
 /* gives a floating point random number in [0,1) */
 
 
@@ -61,24 +66,18 @@ typedef int costDType;
    solutions */
 
 extern int v, k, t, m, b; /* global parameters */
-extern int localOpt, exhaust, pdoFlag;
-extern int randomStartFlag, greedyStartFlag;
-extern int pdoK, pdoJ, pdoPrint, pdoPrintFreq, pdoMaxJDF;
-extern float coolFact, initProb;
+extern int pdoFlag;
+extern int startFromFileFlag, greedyStartFlag;
+extern float pdoK;
+extern int pdoJ, pdoPrint, pdoPrintFreq, pdoMaxJDF;
 extern int check;
-extern int testCount;
-extern int restrictedNeighbors;
+extern int startB, finalB, bSearch;
+extern costType finalCost;
 extern char resultFileName[];
 extern char logFileName[];
-extern float initialT;
-extern int frozen;
-extern int Tset;
+extern int testCount;
 extern int bcount;
-extern int Lset;
-extern int L;
-extern float LFact;
 extern int endLimit;
-extern int apprexp;
 extern int onTheFly;
 extern int coverNumber;
 extern int solX;
@@ -93,7 +92,7 @@ extern unsigned int PRNGseed;
 /* functions common to all modules */
 
 extern int compareVarieties(varietyType *a, varietyType *b);
-extern void coverError(int errno);
+extern void coverError(int errnum);
 
 /* error numbers */
 

@@ -290,7 +290,6 @@ void computeTables(int tl, int kl, int ml, int vl)
 ** without computing the tables again.
 **
 */
-
 void bIs(int bl)
 {
   b = bl;        /* b is the number of k-sets */
@@ -298,10 +297,8 @@ void bIs(int bl)
     coverError(B_TOO_LARGE);
   if(kset) {
     if(!(kset = (rankType *) realloc((char *) kset, b * sizeof(rankType))) ||
-       !(costs = (costType *) realloc((char *) costs,
-				      (b + 1) * sizeof(costType))) ||
-       !(costds = (costDType *) realloc((char *) costds,
-					(b + 1) * sizeof(costDType))))
+       !(costs = (costType *) realloc((char *) costs, (b + 1) * sizeof(costType))) ||
+       !(costds = (costDType *) realloc((char *) costds, (b + 1) * sizeof(costDType))))
       coverError(MEM_ALLOC_ERROR);
   }
   else

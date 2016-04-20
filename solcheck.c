@@ -63,7 +63,8 @@ costType checkSolution(void)
     found = 0;
     for(i = 0; i < b; i++)
       if(commonElements(mRank, kset[i]) >= t)
-	found++;
+	     found++;
+
     totalCost += costs[found];
     if(verbose >= 2 && costs[found]) {
       printf("Nonzero cost: ");
@@ -71,5 +72,5 @@ costType checkSolution(void)
       printf(" (cost %d)\n", costs[found]);
     }
   }
-  return(totalCost);
+  return totalCost;
 }

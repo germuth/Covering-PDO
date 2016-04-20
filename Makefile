@@ -8,37 +8,48 @@ LIBS= -lm
 FLAGS= -ggdb -W # unoptimized, debuggable
 #FLAGS= -W -O2 # optimized, not debuggable
 
-HEADERS= cover.h bincoef.h tables.h setoper.h anneal.h solcheck.h exp.h arg.h exhaustive.h pdo.h
-OBJECTS= cover.o bincoef.o tables.o setoper.o anneal.o solcheck.o exp.o arg.o exhaustive.o pdo.o
-CS=      cover.c bincoef.c tables.c setoper.c anneal.c solcheck.c exp.c arg.c exhaustive.c pdo.c
+#if windows
+REMOVE= del cover.exe
+DELETE = del
+#if UNIX
+#REMOVE= rm -f cover
+#DELETE= rm -f
+
+HEADERS= cover.h bincoef.h tables.h setoper.h solcheck.h exp.h arg.h pdo.h
+OBJECTS= cover.o bincoef.o tables.o setoper.o solcheck.o exp.o arg.o pdo.o
+CS=      cover.c bincoef.c tables.c setoper.c solcheck.c exp.c arg.c pdo.c
 AUTOBACKUPS= *~
 
-.c.o :
+.cc.o :
 	$(CC) $(FLAGS) -c $<
 
 cover:	$(OBJECTS)
-	rm -f cover
+	$(REMOVE)
 	$(CC) -o cover $(OBJECTS) \
 	$(LIBS)
 
 distrib:
-	tar cvf cover.tar anneal.c arg.c bincoef.c cover.c exp.c setoper.c solcheck.c tables.c anneal.h arg.h bincoef.h cover.h exp.h setoper.h solcheck.h tables.h Makefile README
+	tar cvf cover.tar arg.c bincoef.c cover.c exp.c setoper.c solcheck.c tables.c arg.h bincoef.h cover.h exp.h setoper.h solcheck.h tables.h Makefile README
 	compress cover.tar
-	zip cover.zip anneal.c arg.c bincoef.c cover.c exp.c setoper.c solcheck.c tables.c anneal.h arg.h bincoef.h cover.h exp.h setoper.h solcheck.h tables.h Makefile README
+	zip cover.zip arg.c bincoef.c cover.c exp.c setoper.c solcheck.c tables.c arg.h bincoef.h cover.h exp.h setoper.h solcheck.h tables.h Makefile README
 	echo "NOTE: distribution contains files cover.tar.Z, cover.zip, and README."
 
 clean:
-	rm -f $(OBJECTS)
-	rm -f $(AUTOBACKUPS)
-	rm -f core
-	rm -f cover.tar
-	rm -f cover.tar.Z
+	$(DELETE) $(OBJECTS)
+	$(DELETE) $(AUTOBACKUPS)
+	$(DELETE) core
+	$(DELETE) cover.tar
+	$(DELETE) cover.tar.Z
+#	rm -f $(OBJECTS)
+#	rm -f $(AUTOBACKUPS)
+#	rm -f core
+#	rm -f cover.tar
+#	rm -f cover.tar.Z
 
 cover.o: \
 	cover.h \
 	bincoef.h \
 	tables.h \
-	anneal.h \
 	exp.h \
 	solcheck.h
 
@@ -56,13 +67,6 @@ setoper.o: \
 	cover.h \
 	setoper.h \
 	bincoef.h
-
-anneal.o: \
-	cover.h \
-	anneal.h \
-	bincoef.h \
-	exp.h \
-	tables.h
 
 solcheck.o: \
 	cover.h \

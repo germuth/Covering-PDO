@@ -4,6 +4,7 @@
 #include "bincoef.h"
 #include "tables.h"
 #include "exp.h"
+#include "pdo.h"
 
 //always accept sideways moves
 //moves at the same level are counted together towards the number of moves needed to find better solution
@@ -18,6 +19,7 @@ int counter;
 int maxCost = 0;
 int printCount = 0;
 rankType *oldKSet;
+FILE *fp;
 
 static void updateJDF(void){
     /*
@@ -30,13 +32,6 @@ static void updateJDF(void){
     double ans = counter - jdf[currCost];
     ans /= (double)(jdc[currCost] + 1);
     ans += (double)(jdf[currCost]);
-    //derivation is as follows:
-    // (jdc[c]*jdf[c] + counter) / (jdf[c] + 1)
-    // (jdc[c]*jdf[c] + counter + jdf[c] - jdf[c]) / (jdf[c] + 1)
-    // (jdc[c]*jdf[c] + jdf[c]) / (jdf[c] + 1) + (counter - jdf[c]) / (jdf[c] + 1)
-    // jdf[c]*(jdc[c + 1]) / (jdf[c] + 1)      + (counter - jdf[c]) / (jdf[c] + 1)
-    // jdf[c]                                  + (counter - jdf[c]) / (jdf[c] + 1)
-    // jdf[c] + (counter - jdf[c]) / (jdf[c] + 1)
 
     jdf[currCost] = (int)ceil(ans);
 
@@ -47,66 +42,25 @@ static void updateJDF(void){
 }
 
 static costType initSolution(void) {
-    int i, j, i2, count, maxCount, l;
+    int i, j, count, maxCount, l;
     costType initCost;
     coveredType *ptr;
     rankType *coveringsPtr;
 
-    FILE *fp = fopen("startFile.txt", "r");
-
+    fp = fopen("startFile.txt", "r");
     for(i = 0; i < b; i++) {
         if(startFromFileFlag && !bSearch){
-
-            //TODO add some sort of verification here and print error if file sucks
-            varietyType *block = calloc(k+1, sizeof(int));
-            for(j = 0; j < k; j++){
-                int point;
-                fscanf(fp, "%d", &point);
-                block[j] = point;
-            }
-            block[k] = maxv + 1;
-            // printf("%d %d %d %d %d %d\n", block[0],block[1],block[2],block[3],block[4], block[5]);
-            kset[i] = rankSubset(block, k);
-            // printf("%d\n", kset[i]);
+            kset[i] = getNextBlockFromFile();
         }else if(greedyStartFlag && !bSearch){
-            //look at first m-set not covered
-            //construct partial block that covers it
-            //if block has leftover spaces, attempt to cover next m-set
-
-            int idx = 0;
-            varietyType *block = calloc(k + 1, sizeof(int));
-
-            for(j = 0; j < binCoef[v][m]; j++){
-                if(k < idx+t){
-                    //not enough room to cover another one
-                    break;
-                }
-                if(!covered[j]){
-                    //this m-set not covered
-                    //take first t elements of m-set, and add to block
-                    varietyType *mset = calloc(m + 1, sizeof(int));
-                    unrankSubset(covered[j], mset, m);
-                    for(i2 = 0; i2 < t; i2++){
-                        block[i2] = mset[i2 + idx];
-                    }
-                    idx += t;
-                }
-            }
-            //fill in block with other stuff
-            varietyType *com = calloc(v - idx, sizeof(int));
-            makeComplement(block, com, v);
-            for(; idx < k; idx++){
-                block[idx] = com[rnd(v-idx)];//TODO hope it doesn't hit same number twice
-            }
-
-            qsort((char *) block, k, sizeof(varietyType), compareVarieties);
-            //block done
-            kset[i] = rankSubset(block, k);
-        } else if( bSearch == 2 && startB != b){
-            kset[i] = oldKSet[i]; //copy it over
+            kset[i] = getNextGreedyBlock();
+        } else if( bSearch == 2 &&  //if taking from last results
+                startB != b &&      //and this isn't the first one (no one to take frome)
+                !(pack && i == b-1)){//and this isn't the last block (new packing has one new extra block)
+            kset[i] = oldKSet[i]; //copy it over from previous solution
         } else {
-            kset[i] = rnd(binCoef[v][k]);
+            kset[i] = rnd(binCoef[v][k]); //generate randomly
         }
+
         if(onTheFly) {
             calculateOneCovering(kset[i], coverings);
             coveringsPtr = coverings;
@@ -117,8 +71,12 @@ static costType initSolution(void) {
             covered[coveringsPtr[j]]++;
         }
     }
-    if(bSearch == 2){
-        free((void *) oldKSet);
+    if(bSearch == 2 && (startB != b) && oldKSet){
+        //TODO free is crashing program for some reason
+        //crashes occasionally with v=17 k=6 m=4 t=4 b=105 bFinal=114 bSearch=2 pack=1
+        if(!pack){
+            free((void *) oldKSet);
+        }
     }
     fclose(fp);
     for(i = 0, initCost = (costType) 0, ptr = covered; i < coveredLen; i++, ptr++)
@@ -127,48 +85,6 @@ static costType initSolution(void) {
     return initCost;
 }
 
-static void printProgress(void){
-    if(pdoPrint == 0){
-        return;
-    }
-    int indices[] = {0,1,2,3,4,5,6,7,8,9};
-    if(pdoPrint == 2){
-        //print first 10 costs that have been found rather than just first 10
-        int i = 0;
-        int curr = 0;
-        for(; i < maxCost && curr < 10; i++){
-            if(jdc[i] > 1){
-                indices[curr] = i;
-                curr++;
-            }
-        }
-        if(curr != 10){
-            qsort((int *)indices, 10, sizeof(int), compareVarieties);
-        }
-    }else if(pdoPrint == 3){ //show 10 levels above current
-        int i = 0;
-        for(; i < 10; i++){
-            indices[i] = currCost + i;
-        }
-    }
-    printf("                                                                                                             ");
-    printf("\rlevel\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
-    indices[0], indices[1], indices[2], indices[3],
-    indices[4], indices[5], indices[6], indices[7],
-    indices[8], indices[9]);
-    printf("                                                                                                             ");
-    printf("\rjdc\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
-    jdc[indices[0]], jdc[indices[1]], jdc[indices[2]], jdc[indices[3]],
-    jdc[indices[4]], jdc[indices[5]], jdc[indices[6]], jdc[indices[7]],
-    jdc[indices[8]], jdc[indices[9]]);
-    printf("                                                                                                             ");
-    printf("\rjdf\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d",
-    jdf[indices[0]], jdf[indices[1]], jdf[indices[2]], jdf[indices[3]],
-    jdf[indices[4]], jdf[indices[5]], jdf[indices[6]], jdf[indices[7]],
-    jdf[indices[8]], jdf[indices[9]], currCost);
-    printf("\033[F");
-    printf("\033[F");
-}
 
 costType pdo() {
     int i;
@@ -314,7 +230,7 @@ void calculateCosts(void) {
 ** randomNeighbor() computes the rank of a random neigbor of the k-set with
 ** rank `curr'.
 */
-static rankType randomNeighbor(rankType curr)
+rankType randomNeighbor(rankType curr)
 {
   varietyType subset[maxv + 1];
   varietyType csubset[maxv + 1];
@@ -423,4 +339,99 @@ void acceptNeighbor(void)
   for(i = 0; i < coverLen - 1; i++)
     covered[coveringsPtr[i]]++;
   kset[setNumber] = nextS;
+}
+
+rankType getNextBlockFromFile(){
+    int j;
+    //TODO add some sort of verification here and print error if file sucks
+    varietyType *block = calloc(k+1, sizeof(int));
+    for(j = 0; j < k; j++){
+        int point;
+        fscanf(fp, "%d", &point);
+        block[j] = point;
+    }
+    block[k] = maxv + 1;
+    // printf("%d %d %d %d %d %d\n", block[0],block[1],block[2],block[3],block[4], block[5]);
+    return rankSubset(block, k);
+    // printf("%d\n", kset[i]);
+}
+
+rankType getNextGreedyBlock(){
+    int i2, j;
+    //look at first m-set not covered
+    //construct partial block that covers it
+    //if block has leftover spaces, attempt to cover next m-set
+
+    int idx = 0;
+    varietyType *block = calloc(k + 1, sizeof(int));
+
+    for(j = 0; j < binCoef[v][m]; j++){
+        if(k < idx+t){
+            //not enough room to cover another one
+            break;
+        }
+        if(!covered[j]){
+            //this m-set not covered
+            //take first t elements of m-set, and add to block
+            varietyType *mset = calloc(m + 1, sizeof(int));
+            unrankSubset(covered[j], mset, m);
+            for(i2 = 0; i2 < t; i2++){
+                block[i2] = mset[i2 + idx];
+            }
+            idx += t;
+        }
+    }
+    //fill in block with other stuff
+    varietyType *com = calloc(v - idx, sizeof(int));
+    makeComplement(block, com, v);
+    for(; idx < k; idx++){
+        block[idx] = com[rnd(v-idx)];//TODO hope it doesn't hit same number twice
+    }
+
+    qsort((char *) block, k, sizeof(varietyType), compareVarieties);
+    //block done
+    return rankSubset(block, k);
+}
+
+void printProgress(void){
+    if(pdoPrint == 0){
+        return;
+    }
+    int indices[] = {0,1,2,3,4,5,6,7,8,9};
+    if(pdoPrint == 2){
+        //print first 10 costs that have been found rather than just first 10
+        int i = 0;
+        int curr = 0;
+        for(; i < maxCost && curr < 10; i++){
+            if(jdc[i] > 1){
+                indices[curr] = i;
+                curr++;
+            }
+        }
+        if(curr != 10){
+            qsort((int *)indices, 10, sizeof(int), compareVarieties);
+        }
+    }else if(pdoPrint == 3){ //show 10 levels above current
+        int i = 0;
+        for(; i < 10; i++){
+            indices[i] = currCost + i;
+        }
+    }
+    printf("                                                                                                             ");
+    printf("\rlevel\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+    indices[0], indices[1], indices[2], indices[3],
+    indices[4], indices[5], indices[6], indices[7],
+    indices[8], indices[9]);
+    printf("                                                                                                             ");
+    printf("\rjdc\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+    jdc[indices[0]], jdc[indices[1]], jdc[indices[2]], jdc[indices[3]],
+    jdc[indices[4]], jdc[indices[5]], jdc[indices[6]], jdc[indices[7]],
+    jdc[indices[8]], jdc[indices[9]]);
+    printf("                                                                                                             ");
+    printf("\rjdf\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d",
+    jdf[indices[0]], jdf[indices[1]], jdf[indices[2]], jdf[indices[3]],
+    jdf[indices[4]], jdf[indices[5]], jdf[indices[6]], jdf[indices[7]],
+    jdf[indices[8]], jdf[indices[9]], currCost);
+    printf("\033[F");
+    printf("\033[F");
 }

@@ -28,6 +28,8 @@ struct varstruct {
   {"b", "%d", &b},
   {"finalB", "%d", &finalB},
   {"FB", "%d", &finalB},
+  {"bFinal", "%d", &finalB},
+  {"BF", "%d", &finalB},
   {"bSearch", "%d", &bSearch},
   {"BS", "%d", &bSearch},
   {"endLimit", "%d", &endLimit},

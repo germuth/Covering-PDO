@@ -42,8 +42,7 @@ int endLimit = 0;
 int startFromFileFlag = 0;
 int greedyStartFlag = 0;
 
-float pdoK = 10;
-int pdoJ = 2;
+float pdoK, pdoJ = 10;
 int pdoPrint = 2;
 int pdoPrintFreq = 500;
 int pdoMaxJDF = 5000000;
@@ -175,6 +174,10 @@ int main(int argc, char **argv) {
     time ( &rawtime );
     timeinfo = localtime ( &rawtime );
     printf ( "Started at %s\n", asctime (timeinfo) );
+
+    if(finalB == 0 && pack){
+        finalB = 9999999; //finalB needs to be arbitrarly large with packings
+    }
 
     startB = b;
     while((!pack && (b >= finalB)) || (pack && (b <= finalB))){

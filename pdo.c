@@ -12,7 +12,13 @@
 //update jdf = ceil[ n*jdf + newestAmountOFMoves / n+1 ]
 //try 2*jdf amount of moves
 
+//the jumpdownfunction used in the rest of the program is jdf (integers)
+//however, in order ot update the jdf, the floating point values are always saved
+//and used for all calculations. After a calculation the value is ceiling-ed
+//to update the jdf
+//this prevents accumulating ceilings from slowly raising the jump down function
 int *jdf;
+double *jdf_precise;
 int *jdc;
 int currCost;
 int counter;
@@ -29,10 +35,11 @@ static void updateJDF(void){
 
     //Jan de Heer, more efficient way to compute
     //and avoids overflows from initial multiplication
-    double ans = counter - jdf[currCost];
+    double ans = counter - jdf_precise[currCost];
     ans /= (double)(jdc[currCost] + 1);
-    ans += (double)(jdf[currCost]);
+    ans += (double)(jdf_precise[currCost]);
 
+    jdf_precise[currCost] = ans;
     jdf[currCost] = (int)ceil(ans);
 
     //only try up to a million times?
@@ -131,8 +138,10 @@ costType pdo() {
 
     //Jump Down Function: cost -> moves needed to find good neighbour
     jdf = calloc(maxCost, sizeof(int));
+    jdf_precise = calloc(maxCost, sizeof(double));
     for(i = 0; i < maxCost; i++){
-        jdf[i] = (int)(pdoK * b * neighborLen);
+        jdf_precise[i] = pdoK * b * neighborLen;
+        jdf[i] = (int)jdf_precise[i];
     }
     //Jump Down Count: jdc[i] = number of times we have jumped down from a solution at level i
     jdc = calloc(maxCost, sizeof(int));
@@ -178,7 +187,7 @@ costType pdo() {
         costDifference = computeNeighbor();
     }
     if(pdoPrint){
-        printf("\n\n\n\n");
+        printf("\n\n\n\n\n");
     }
 
     return currCost;//found solution
@@ -432,6 +441,9 @@ void printProgress(void){
     jdf[indices[0]], jdf[indices[1]], jdf[indices[2]], jdf[indices[3]],
     jdf[indices[4]], jdf[indices[5]], jdf[indices[6]], jdf[indices[7]],
     jdf[indices[8]], jdf[indices[9]], currCost);
-    printf("\033[F");
-    printf("\033[F");
+    // printf("\033[F");
+    // printf("\033[F");
+    printf("\033[1A");
+    printf("\033[1A");
+    printf("\033[1A");
 }

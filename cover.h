@@ -68,8 +68,8 @@ typedef int costDType;
 extern int v, k, t, m, b; /* global parameters */
 extern int pdoFlag;
 extern int startFromFileFlag, greedyStartFlag;
-extern float pdoK;
-extern int pdoJ, pdoPrint, pdoPrintFreq, pdoMaxJDF;
+extern float pdoK, pdoJ;
+extern int pdoPrint, pdoPrintFreq, pdoMaxJDF;
 extern int check;
 extern int startB, finalB, bSearch;
 extern costType finalCost;

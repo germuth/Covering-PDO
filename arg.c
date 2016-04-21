@@ -36,7 +36,7 @@ struct varstruct {
   {"EL", "%d", &endLimit},
   {"pdo", "%d", &pdoFlag},
   {"pdoK", "%f", &pdoK},
-  {"pdoJ", "%d", &pdoJ},
+  {"pdoJ", "%f", &pdoJ},
   {"pdoPrint", "%d", &pdoPrint},
   {"pdoPrintFreq", "%d", &pdoPrintFreq},
   {"pdoMaxJDF", "%d", &pdoMaxJDF},

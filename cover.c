@@ -42,7 +42,8 @@ int endLimit = 0;
 int startFromFileFlag = 0;
 int greedyStartFlag = 0;
 
-float pdoK, pdoJ = 10;
+float pdoK = 10;
+float pdoJ = 2;
 int pdoPrint = 2;
 int pdoPrintFreq = 500;
 int pdoMaxJDF = 5000000;

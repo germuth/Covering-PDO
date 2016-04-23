@@ -424,17 +424,17 @@ void printProgress(void){
         }
     }
     printf("                                                                                                             ");
-    printf("\rlevel\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+    printf("\rlevel\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
     indices[0], indices[1], indices[2], indices[3],
     indices[4], indices[5], indices[6], indices[7],
     indices[8], indices[9]);
     printf("                                                                                                             ");
-    printf("\rjdc\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+    printf("\rjdc\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
     jdc[indices[0]], jdc[indices[1]], jdc[indices[2]], jdc[indices[3]],
     jdc[indices[4]], jdc[indices[5]], jdc[indices[6]], jdc[indices[7]],
     jdc[indices[8]], jdc[indices[9]]);
     printf("                                                                                                             ");
-    printf("\rjdf\t\t\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d",
+    printf("\rjdf\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d",
     jdf[indices[0]], jdf[indices[1]], jdf[indices[2]], jdf[indices[3]],
     jdf[indices[4]], jdf[indices[5]], jdf[indices[6]], jdf[indices[7]],
     jdf[indices[8]], jdf[indices[9]], currCost);

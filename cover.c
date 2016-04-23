@@ -106,8 +106,7 @@ void coverError(int errnum)
 ** printParams prints the parameters given to the program.
 **
 */
-void printParams(FILE *fp)
-{
+void printParams(FILE *fp){
   fprintf(fp, "Design parameters:\n"
 	  "------------------\n"
 	  "t - (v,m,k,l) = %d - (%d,%d,%d,%d)\nb = %d\n\n",
@@ -115,10 +114,11 @@ void printParams(FILE *fp)
   fprintf(fp, "Optimization parameters:\n"
 	  "------------------------\n");
   fprintf(fp, "EndLimit      = %d\n"
+    "bSearch       = %d\n"
     "FinalB        = %d\n"
     "PDO-Search    = %d\n"
-    "PDO-K         = %d\n"
-    "PDO-J         = %d\n"
+    "PDO-K         = %f\n"
+    "PDO-J         = %f\n"
     "PDO-Print     = %d\n"
     "PDO-Print-Freq= %d\n"
     "PDO-Max-JDF   = %d\n"
@@ -128,7 +128,7 @@ void printParams(FILE *fp)
     "Packing       = %d\n"
     "SolX          = %d\n"
     "MemoryLimit   = %lu\n"
-    "check         = %d\n\n", endLimit, finalB, pdoFlag, pdoK, pdoJ, pdoPrint,
+    "check         = %d\n\n", endLimit, bSearch, finalB, pdoFlag, pdoK, pdoJ, pdoPrint,
         pdoPrintFreq, pdoMaxJDF, greedyStartFlag, startFromFileFlag, onTheFly,
         pack, solX, memoryLimit, check);
   fflush(fp);

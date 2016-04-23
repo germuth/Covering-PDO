@@ -1,7 +1,7 @@
 Design parameters:
 ------------------
 t - (v,m,k,l) = 3 - (18,4,5,1)
-b = 50
+b = 48
 
 Optimization parameters:
 ------------------------
@@ -11,7 +11,7 @@ PDO-Search    = 1
 PDO-K         = 0
 PDO-J         = 0
 PDO-Print     = 2
-PDO-Print-Freq= 1000
+PDO-Print-Freq= 10000
 PDO-Max-JDF   = 5000000
 greedyStart   = 0
 startFromFile = 0
@@ -24,4 +24,3 @@ check         = 1
 
 Runs:
 -----
-cost          = 0

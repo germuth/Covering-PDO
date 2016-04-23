@@ -43,7 +43,7 @@ int startFromFileFlag = 0;
 int greedyStartFlag = 0;
 
 float pdoK = 10;
-float pdoJ = 2;
+float pdoJ = 3;
 int pdoPrint = 2;
 int pdoPrintFreq = 500;
 int pdoMaxJDF = 5000000;
@@ -223,6 +223,7 @@ int main(int argc, char **argv) {
 
     freeTables();
     printf("Program Terminated Successfully \n");
+
     return !solFound; /* returns 0 if a solution was found */
 }
 

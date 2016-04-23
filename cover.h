@@ -22,7 +22,12 @@
 
 
 /* initialize random number generator */
+//Note that the random number generated is seeded with the current time which
+//only has precision up to a second
+//this means if two simulations are run within a second, they will run identically
+
 //if windows
+//#define randomize() srand((int)time(NULL))
 #define randomize() srand((int)time(NULL))
 #define setPRNGseed(X) srand(X)
 #define rnd(num) (rand() % (num))

@@ -160,19 +160,16 @@ costType pdo() {
     while( currCost > endLimit){
         counter++;
         if( costDifference > 0) { //if( neighborCost > currCost){
-            if( counter > pdoJ * jdf[currCost] ){ //TODO parameter here
+            if( counter > pdoJ * jdf[currCost] ){
                 //failed to find jump down from this level, accept bad neighbour anyway
                 acceptNeighbor();
                 counter = 0;
                 currCost += costDifference;
-            }else{
-                //undo move
-
             }
         }else if(costDifference == 0) { //if( neighborCost == currCost ){
             acceptNeighbor();
             //counter keeps counting
-        }else {
+        }else { //found better solution
             updateJDF();
             jdc[currCost]++;//increment number of times we have jumped down
             acceptNeighbor();
@@ -187,7 +184,7 @@ costType pdo() {
         costDifference = computeNeighbor();
     }
     if(pdoPrint){
-        printf("\n\n\n\n\n");
+        printf("\n\n\n\n");
     }
 
     return currCost;//found solution
@@ -206,6 +203,7 @@ static rankType nextS;
 static rankType stored[2];
 static int currSto, nextSto;
 rankType *storedPtr[2];
+
 /*
 ** Populates costs array
 ** Contains the punishment for how many times it was covered
@@ -215,7 +213,6 @@ rankType *storedPtr[2];
 ** if lambda is 1 we would expect [1,0,0,0,0,0,0,0]
 **  for a covering design (there is no cost for over-covering)
 */
-
 void calculateCosts(void) {
   int i;
 
@@ -441,9 +438,9 @@ void printProgress(void){
     jdf[indices[0]], jdf[indices[1]], jdf[indices[2]], jdf[indices[3]],
     jdf[indices[4]], jdf[indices[5]], jdf[indices[6]], jdf[indices[7]],
     jdf[indices[8]], jdf[indices[9]], currCost);
-    // printf("\033[F");
-    // printf("\033[F");
-    printf("\033[1A");
-    printf("\033[1A");
-    printf("\033[1A");
+    printf("\033[F");
+    printf("\033[F");
+    // printf("\033[1A");
+    // printf("\033[1A");
+    // printf("\033[1A");
 }

@@ -249,7 +249,6 @@ void printProblemParams(){
         printParams(stdout);
     }
     printParams(logFp);
-    fprintf(logFp, "\nRuns:\n-----\n");
 }
 
 void printProblemOutput(){
@@ -257,8 +256,6 @@ void printProblemOutput(){
         printf("Result:\n" "-------\n"
         "EndLimit      = %d\n\n", endLimit);
     }
-    fprintf(logFp, "cost          = %d\n", finalCost);
-    fflush(logFp);
     if(verbose){
         if(finalCost <= endLimit) {
             printf("Solution:\n" "---------\n");

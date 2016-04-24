@@ -9,11 +9,11 @@ FLAGS= -ggdb -W # unoptimized, debuggable
 #FLAGS= -W -O2 # optimized, not debuggable
 
 #if windows
-REMOVE= del cover.exe
-DELETE = del
+#REMOVE= del cover.exe
+#DELETE = del
 #if UNIX
-#REMOVE= rm -f cover
-#DELETE= rm -f
+REMOVE= rm -f cover
+DELETE= rm -f
 
 HEADERS= cover.h bincoef.h tables.h setoper.h solcheck.h exp.h arg.h pdo.h
 OBJECTS= cover.o bincoef.o tables.o setoper.o solcheck.o exp.o arg.o pdo.o

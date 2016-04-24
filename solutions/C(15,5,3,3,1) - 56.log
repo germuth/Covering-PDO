@@ -1,0 +1,28 @@
+Design parameters:
+------------------
+t - (v,m,k,l) = 3 - (15,3,5,1)
+b = 56
+
+Optimization parameters:
+------------------------
+EndLimit      = 0
+bSearch       = 2
+FinalB        = 55
+PDO-Search    = 1
+PDO-K         = 10.000000
+PDO-J         = 3.000000
+PDO-Print     = 2
+PDO-Print-Freq= 5000
+PDO-Max-JDF   = 5000000
+greedyStart   = 0
+startFromFile = 0
+OntheFly      = 0
+Packing       = 0
+SolX          = 0
+MemoryLimit   = 0
+check         = 1
+
+
+Runs:
+-----
+cost          = 0

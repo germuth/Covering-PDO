@@ -2,6 +2,8 @@
 
 This program is an altered form of Cover by Kari J. Nurmela and Patric R. J. \"Osterg\aard. It has been edited to replace simulated annealing with problem dependant optimization.
 
+This was used to break some world records at the time, see https://www.researchgate.net/profile/Iliya-Bluskov/publication/323854750_New_Constant_Weight_Codes_and_Packing_Numbers/links/5bea1194299bf1124fce1e81/New-Constant-Weight-Codes-and-Packing-Numbers.pdf
+
 See the original readme below:
 
 cover --- a program for searching general covering and packing designs

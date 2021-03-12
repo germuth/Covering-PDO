@@ -11,7 +11,16 @@ The current version of the program works best on Windows. In order to use it on 
 
 This was used to break some world records at the time, see https://www.researchgate.net/profile/Iliya-Bluskov/publication/323854750_New_Constant_Weight_Codes_and_Packing_Numbers/links/5bea1194299bf1124fce1e81/New-Constant-Weight-Codes-and-Packing-Numbers.pdf
 
-TODO - add other world records
+From the paper:
+
+	"We improve the best known lower bounds on A(n, d, w) for three sets of parameters by using 
+	optimization ... A(29, 8, 5) ≥ 36, A(30, 8, 5) ≥ 41, and A(32, 8, 5) = 44 ... The (32, 8, 5) 
+	code is optimal and leads to eight more new optimal codes. We show this by improving the known
+	result on the problem of finding the packing number P(v, 5, 2) for v ≡ 12 (mod 32)..."
+
+We also have broken some other records that are currently unpublished such as:
+
+	C(15,5,3)<=55;
 
 ## Parameters:
 

@@ -75,7 +75,8 @@ This allows you to start looking for an improvement from a given solution. It re
 ### greedyStart
 
 This uses a kind of greedy approach when first constructing a solution. Normally, the heuristic starts with b random blocks. If  greedyStart=1, then each of the b starting blocks covers at least one m-set not covered by any of the other blocks. Default is 0. Generally, this parameter does not essentially affect the convergence.
-bSearch, bFinal
+
+### bSearch, bFinal
 
 These parameters allow the program to automatically start a new search for a covering of size b-1 if one of size b has been found (or a packing of size b+1 if one of size b has been found). The heuristic starts by looking for a solution with b blocks. If such is found, and bSearch is not 0, the heuristic will automatically search for a solution of size b-1 (covering) or b+1 (packing). If bSearch=1, it will start looking for a new solution from random. If bSearch=2, it will use the old solution and try to improve it. bFinal is the final value of b you are interested in (the smallest size covering, or the largest size packing). bFinal < b for coverings, and bFinal > b for packings.  bSearch=0 is the default (no automatic restart for improvement(s)). Naturally, if bSearch is not 0, then bFinal should be specified. Note that enabling bSearch might be incompatible with startFromFile or greedyStart.
 

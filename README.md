@@ -133,6 +133,8 @@ MemoryLimit is a parameter you can set at runtime, it must be increased
 Overflow of rankType when computing the rank of a block
 
 ## Compilation:
+
+### Windows
 This program is compiled for Windows. It is done using TDM-GCC v5.1.0-3 (http://tdm-gcc.tdragon.net/). After installation this provides a directory C:/TDM-GCC-64 with all of the contents. The make utility (which invokes gcc and compiles the program) is located in C:/TDM-GCC-64/bin/mingw32-make. Note you can copy this and rename it if you like. If the entire C:/TDM-GCC-64/bin folder is added as an environment variable in windows, then these programs can be ran from any directory. In order to add the environment variable you can use the following steps:
 
 My Computer -> Properties (use right click menu)
@@ -150,6 +152,17 @@ You would change it to read:
 	C:\Program Files; C:\Winnt; C:\Winnt\System32; C:\TDM-GCC-64\bin
 
 You should now be able to invoke  mingw32-make  and compile the program.
+
+### Unix
+
+On Unix I was able to simply run:
+
+	> git clone https://github.com/germuth/Covering-PDO.git
+	> cd Covering-PDO
+	> make
+	> ./cover
+
+If you try this yourself and notice you need a library, please file a PR to suggest installing that library here. It looks like my development workstation already had all the required components.
 
 ## Notes:
 

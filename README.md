@@ -134,12 +134,18 @@ Overflow of rankType when computing the rank of a block
 
 ## Compilation:
 This program is compiled for Windows. It is done using TDM-GCC v5.1.0-3 (http://tdm-gcc.tdragon.net/). After installation this provides a directory C:/TDM-GCC-64 with all of the contents. The make utility (which invokes gcc and compiles the program) is located in C:/TDM-GCC-64/bin/mingw32-make. Note you can copy this and rename it if you like. If the entire C:/TDM-GCC-64/bin folder is added as an environment variable in windows, then these programs can be ran from any directory. In order to add the environment variable you can use the following steps:
+
 My Computer -> Properties (use right click menu)
+
 System Properties Window -> Advanced Tab
+
 Select Environment Variables
+
 Highlight the Path variable and click Edit
+
 You can append a directory to this variable (do not delete pre-existing directories). For example it may look like this when you start:
 	C:\Program Files; C:\Winnt; C:\Winnt\System32
+	
 You would change it to read:
 	C:\Program Files; C:\Winnt; C:\Winnt\System32; C:\TDM-GCC-64\bin
 

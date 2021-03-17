@@ -47,10 +47,10 @@ Sometimes you may want to stop the heuristic before cost zero is reached. The va
 
 Set this variable to 1, if you want the program to not allocate all the tables and to compute some of the needed data on-the-fly. Abbreviation OF.
 
-### SolX
+### solX
 
  Set this variable to 1, if you want the solutions to be printed as
- `--X-XX' instead of `2 4 5'. Abbreviation SX.
+ `001011' instead of `2 4 5'. Abbreviation is SX.
 
 
 ### Pack

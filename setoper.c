@@ -133,11 +133,11 @@ void printSubset(FILE *fp, rankType r, int card) {
   if(solX)
     for(i = 0, vptr = set; i < v; i++)
       if(*vptr == i) {
-	fprintf(fp, "X");
+	fprintf(fp, "1");
 	vptr++;
       }
       else
-	fprintf(fp, "-");
+	fprintf(fp, "0");
   else
     for(i = 0; i < card; i++)
       fprintf(fp, "%d ", set[i]);
